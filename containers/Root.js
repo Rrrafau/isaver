@@ -17,7 +17,7 @@ if(typeof history !== 'undefined') {
 
 const appRoutes = () => (
   <Route path="/" component={Layout}>
-    <IndexRoute component={Landing} />
+    <IndexRoute component={AddSpendings} />
     <Route path="addspendings" component={AddSpendings} />
   </Route>
 )

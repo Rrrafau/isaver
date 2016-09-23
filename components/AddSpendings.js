@@ -149,7 +149,7 @@ export default class AddSpendings extends Component {
       <div>
         <div className="isaver-header">
           <div className="container">
-          <h1><i className="fa fa-balance-scale fa-lg"></i> Add your expenses</h1>
+          <h1><i className="fa fa-balance-scale fa-lg"></i> Add your expenses (DEMO)</h1>
           </div>
         </div>
         <div className="container">

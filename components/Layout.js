@@ -1,17 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { login, logout } from '../actions';
-import Header from '../components/Header'
-import Sidebar from '../components/Sidebar'
-import TextArea from '../components/TextArea'
-import classNames from 'classnames';
-
-import {
-  MainContainer,
-  Grid,
-  Row,
-  Col,
-  } from '@sketchpixy/rubix';
 
 class Layout extends Component {
   constructor(props) {
@@ -31,28 +20,7 @@ class Layout extends Component {
   render() {
     const { isAuthenticated, profile } = this.props
     return (
-      <MainContainer style="marginLeft: 0" {...this.props}>
-        { isAuthenticated ? (
-          <Sidebar
-            isAuthenticated={isAuthenticated}
-            profile={profile}
-          />
-        ) : null }
-        <Header
-          isAuthenticated={isAuthenticated}
-          onLoginClick={this.handleLoginClick}
-          onLogoutClick={this.handleLogoutClick}
-        />
-        <div id='body'>
-          <Grid>
-            <Row>
-              <Col xs={12}>
-                {this.props.children}
-              </Col>
-            </Row>
-          </Grid>
-        </div>
-      </MainContainer>
+      <div>{this.props.children}</div>
     )
   }
 }

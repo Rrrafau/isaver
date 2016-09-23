@@ -35,8 +35,8 @@ app.use(webpackHotMiddleware(compiler))
 // This middleware will check incoming requests for a valid
 // JWT on any routes that it is applied to.
 const authCheck = jwt({
-  secret: new Buffer('w0ljuzF1baN9GLknxI24IuWCb7-5rWQcYxGgipCQ4tjvCFykKKdow7PjM4j_U-xY', 'base64'),
-  audience: 'yGk6tt6KKPXlKcCPNXai1u201eSr987n'
+  secret: new Buffer('umANL39X-d7-LhcQV78cK30JbZUvH2d34pm8WnIsxKHC25_SQdkZU0RNCOUlpVz5', 'base64'),
+  audience: 'dFI6x9UgMQP0dEeEOfpLeCaUrGsXXbO8'
 });
 
 app.use('/api', graphQLHTTP({

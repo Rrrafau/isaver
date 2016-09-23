@@ -97,6 +97,7 @@ export default class AddSpendings extends Component {
     this.deleteSpending = this.deleteSpending.bind(this)
     this.editSpending = this.editSpending.bind(this)
     this.state = {
+      edit: '',
       amount: '',
       category: '',
       spendings: {}
@@ -112,8 +113,9 @@ export default class AddSpendings extends Component {
   }
 
   editSpending(category, amount) {
+
     this.setState({
-      amount, category
+      amount, category, edit: category
     })
   }
 
@@ -128,13 +130,18 @@ export default class AddSpendings extends Component {
     }
 
     if(spendings[category]) {
-      spendings[category] += parseFloat(amount)
+      if(this.state.edit === category) {
+        spendings[category] = parseFloat(amount)
+      }
+      else {
+        spendings[category] += parseFloat(amount)
+      }
     }
     else {
       spendings[category] = parseFloat(amount)
     }
 
-    this.setState({spendings, amount: '', category: ''})
+    this.setState({spendings, amount: '', category: '', edit: ''})
   }
 
   handleChange(e) {

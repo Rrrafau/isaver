@@ -175,7 +175,7 @@ export default class AddSpendings extends Component {
                     type="number"
                     name="amount"
                     value={this.state.amount}
-                    placeholder="e.g. 25.50"
+                    placeholder="e.g. 75.50"
                     onChange={this.handleChange}
                   />
                   <FormControl.Feedback />
@@ -203,7 +203,7 @@ export default class AddSpendings extends Component {
                       className="pull-right isaver-button"
                       onClick={this.addSpending}
                       bsStyle="info">
-                      <i className="fa fa-plus" aria-hidden="true"></i> {this.state.edit ? "Edit" : "Add"}
+                      <i className="fa fa-plus" aria-hidden="true"></i> {this.state.edit ? "Update" : "Add"}
                     </Button>
                   </div>
                 </FormGroup>

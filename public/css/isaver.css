@@ -6,6 +6,7 @@ button {
   float: right;
   border-radius: 18px;
   margin: 6px;
+  margin-top: 7px;
 }
 .isaver-header {
   background: #20b7f7;
@@ -15,7 +16,7 @@ button {
 }
 .isaver-header h1 {
   color: #fbf0f0;
-  font-weight: lighter;
+  font-weight: 300;
   margin: 24px 0 24px 0;
 }
 .isaver-helptext {

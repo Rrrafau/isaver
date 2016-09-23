@@ -1,6 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { login, logout } from '../actions';
+import { Link } from 'react-router'
+import { login, logout } from '../actions'
+import {
+  Navbar,
+  NavItem,
+  Nav,
+  NavDropdown,
+  MenuItem,
+} from 'react-bootstrap'
 
 class Layout extends Component {
   constructor(props) {
@@ -10,6 +18,7 @@ class Layout extends Component {
   }
 
   handleLoginClick() {
+    console.log('login')
     this.props.login()
   }
 
@@ -19,8 +28,52 @@ class Layout extends Component {
 
   render() {
     const { isAuthenticated, profile } = this.props
+    console.log(this.props)
     return (
-      <div>{this.props.children}</div>
+      <div>
+        <Navbar inverse className="isaver-navbar">
+          <Navbar.Header>
+            <Navbar.Brand style={{color:'#fff'}}>
+              <span>SMART</span><i style={{fontWeight:300}}>SAVER</i>&nbsp;<i className="fa fa-book" aria-hidden="true"></i>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav>
+              <li>
+                <Link to="addspendings">
+                  <i className="fa fa-plus-square" aria-hidden="true"></i>&nbsp;
+                  Add Spendings
+                </Link>
+              </li>
+              <li>
+                <Link to="addspendings">
+                  <i className="fa fa-line-chart" aria-hidden="true"></i>&nbsp;
+                  Dashboard
+                </Link>
+              </li>
+            </Nav>
+            { this.props.isAuthenticated ?
+              (
+                <Nav pullRight>
+                  <Link to="profile"><img className="isaver-navbar-profile-picture" src={this.props.profile.picture} /></Link>
+                  <NavItem>
+                      <i className="fa fa-user fa-lg" aria-hidden="true"></i>
+                  </NavItem>
+                  <NavItem onClick={this.handleLogoutClick} >
+                    <i className="fa fa-sign-out fa-lg" aria-hidden="true"></i>
+                  </NavItem>
+                </Nav>
+              ) : (
+                <Nav pullRight>
+                  <NavItem onClick={this.handleLoginClick} ><i className="fa fa-sign-in" aria-hidden="true"></i> LOGIN</NavItem>
+                </Nav>
+              )
+            }
+          </Navbar.Collapse>
+        </Navbar>
+        {this.props.children}
+      </div>
     )
   }
 }

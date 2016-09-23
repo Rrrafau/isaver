@@ -1,0 +1,63 @@
+button {
+  outline: none !important;
+}
+.isaver-navbar-profile-picture {
+  height: 36px;
+  float: right;
+  border-radius: 18px;
+  margin: 6px;
+}
+.isaver-header {
+  background: #20b7f7;
+  margin-top: 0;
+  float: left;
+  width: 100%;
+}
+.isaver-header h1 {
+  color: #fbf0f0;
+  font-weight: lighter;
+  margin: 24px 0 24px 0;
+}
+.isaver-helptext {
+  font-style: italic;
+  color: #cacaca;
+  float: right;
+}
+.isaver-navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+.isaver-add-amount {
+  margin-top: 5px;
+}
+.isaver-table-no-data {
+  text-align: center;
+  background: #f7f6f6;
+  font-style: italic;
+  color: #9a9898;
+}
+.isaver-disclaimer {
+  color: gray;
+  font-weight: 200;
+}
+.isaver-input {
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 1.5em;
+  height: auto;
+  font-weight: 200;
+}
+.isaver-button {
+  font-size: 1.5em;
+}
+.isaver-input.isaver-input-amount {
+  color: #f59a22;
+}
+@media (min-width: 768px)
+  .isaver-header {
+      padding-top: 60px;
+      padding-bottom: 60px;
+      font-size: 24px;
+      text-align: left;
+  }
+}

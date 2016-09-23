@@ -96,6 +96,7 @@ export default class AddSpendings extends Component {
     this.addSpending = this.addSpending.bind(this)
     this.deleteSpending = this.deleteSpending.bind(this)
     this.editSpending = this.editSpending.bind(this)
+    this.clearData = this.clearData.bind(this)
     this.state = {
       edit: '',
       amount: '',
@@ -110,6 +111,14 @@ export default class AddSpendings extends Component {
     delete spendings[category]
 
     this.setState({spendings})
+  }
+
+  clearData() {
+      this.setState({
+        edit: '',
+        amount: '',
+        category: ''
+      })
   }
 
   editSpending(category, amount) {
@@ -198,14 +207,32 @@ export default class AddSpendings extends Component {
               <Col sm={2}>
                 <ControlLabel></ControlLabel>
                 <FormGroup controlId="formBasicText">
-                  <div className="isaver-add-amount">
-                    <Button
-                      className="pull-right isaver-button"
-                      onClick={this.addSpending}
-                      bsStyle="info">
-                      <i className="fa fa-plus" aria-hidden="true"></i> {this.state.edit ? "Save" : "Add"}
-                    </Button>
-                  </div>
+                  {this.state.edit ? (
+                    <div className="isaver-add-amount">
+                      <Button
+                        className="pull-right isaver-button"
+                        onClick={this.clearData}
+                        bsStyle="warning">
+                        <i className="fa fa-close" aria-hidden="true"></i>
+                      </Button>
+                      <Button
+                        className="pull-right isaver-button"
+                        style={{marginRight:4}}
+                        onClick={this.addSpending}
+                        bsStyle="success">
+                        <i className="fa fa-check" aria-hidden="true"></i>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="isaver-add-amount">
+                      <Button
+                        className="pull-right isaver-button"
+                        onClick={this.addSpending}
+                        bsStyle="info">
+                        <i className="fa fa-close" aria-hidden="true"></i> Add
+                      </Button>
+                    </div>
+                  )}
                 </FormGroup>
               </Col>
               <Col sm={12}><span className="isaver-helptext">

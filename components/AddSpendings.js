@@ -203,7 +203,7 @@ export default class AddSpendings extends Component {
                       className="pull-right isaver-button"
                       onClick={this.addSpending}
                       bsStyle="info">
-                      <i className="fa fa-plus" aria-hidden="true"></i> {this.state.edit ? "Update" : "Add"}
+                      <i className="fa fa-plus" aria-hidden="true"></i> {this.state.edit ? "Save" : "Add"}
                     </Button>
                   </div>
                 </FormGroup>

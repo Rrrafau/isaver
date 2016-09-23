@@ -165,7 +165,7 @@ export default class AddSpendings extends Component {
       <div>
         <div className="isaver-header">
           <div className="container">
-          <h1><i className="fa fa-balance-scale fa-lg"></i> Add your expenses <span style={{fontWeight: 'normal'}}>(DEMO)</span></h1>
+          <h1><i className="fa fa-balance-scale fa-lg"></i> Add your expenses <span style={{fontStyle: 'italic', color: '#dcd2d2', fontWeight: '300'}}>(demo)</span></h1>
           </div>
         </div>
         <div className="container">

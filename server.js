@@ -22,7 +22,7 @@ const graphQLHTTP = require('express-graphql')
 const schema = require('./database/schema.js')
 
 const app = new express()
-const port = 3000
+const port = 3001
 const compiler = webpack(config)
 
 const jwt = require('express-jwt');

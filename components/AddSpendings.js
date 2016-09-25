@@ -23,6 +23,88 @@ Number.prototype.formatMoney = function(c, d, t){
   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
 };
 
+class Inputs extends Component {
+  render() {
+    return (
+      <div>
+        <Col sm={3}>
+          <ControlLabel>Amount (₱)</ControlLabel>
+          <FormGroup controlId="formBasicText">
+            <FormControl
+              className="isaver-input"
+              type="number"
+              name="amount"
+              value={this.props.amount}
+              placeholder="e.g. 75.50"
+              onChange={this.props.handleChange}
+            />
+            <FormControl.Feedback />
+          </FormGroup>
+        </Col>
+        <Col sm={4}>
+          <ControlLabel>Category</ControlLabel>
+          <FormGroup controlId="formBasicText">
+            <FormControl
+              className="isaver-input"
+              type="text"
+              name="category"
+              value={this.props.category}
+              placeholder="e.g. groceries, taxi, night out..."
+              onChange={this.props.handleChange}
+            />
+            <FormControl.Feedback />
+          </FormGroup>
+        </Col>
+        <Col sm={3}>
+          <ControlLabel>Group (optional)</ControlLabel>
+          <FormGroup controlId="formBasicText">
+            <FormControl
+              className="isaver-input"
+              type="text"
+              name="group"
+              value={this.props.group}
+              placeholder="e.g. bills or food"
+              onChange={this.props.handleChange}
+            />
+            <FormControl.Feedback />
+          </FormGroup>
+        </Col>
+        <Col sm={2}>
+          <ControlLabel></ControlLabel>
+          <FormGroup controlId="formBasicText">
+            {this.props.edit ? (
+              <div className="isaver-add-amount">
+                <Button
+                  className="pull-right isaver-button"
+                  onClick={this.props.clearData}
+                  bsStyle="warning">
+                  <i className="fa fa-close" aria-hidden="true"></i>
+                </Button>
+                <Button
+                  className="pull-right isaver-button"
+                  style={{marginRight:4}}
+                  onClick={this.props.addSpending}
+                  bsStyle="success">
+                  <i className="fa fa-check" aria-hidden="true"></i>
+                </Button>
+              </div>
+            ) : (
+              <div className="isaver-add-amount">
+                <Button
+                  className="pull-right isaver-button"
+                  onClick={this.props.addSpending}
+                  bsStyle="info">
+                  <i className="fa fa-close" aria-hidden="true"></i> Add
+                </Button>
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+      </div>
+    )
+  }
+}
+
 class SpendingsTable extends Component {
   render() {
     let i = 0, spendingsData;
@@ -210,79 +292,12 @@ export default class AddSpendings extends Component {
           </Row>
           <Row>
             <form>
-              <Col sm={3}>
-                <ControlLabel>Amount (₱)</ControlLabel>
-                <FormGroup controlId="formBasicText">
-                  <FormControl
-                    className="isaver-input"
-                    type="number"
-                    name="amount"
-                    value={this.state.amount}
-                    placeholder="e.g. 75.50"
-                    onChange={this.handleChange}
-                  />
-                  <FormControl.Feedback />
-                </FormGroup>
-              </Col>
-              <Col sm={4}>
-                <ControlLabel>Category</ControlLabel>
-                <FormGroup controlId="formBasicText">
-                  <FormControl
-                    className="isaver-input"
-                    type="text"
-                    name="category"
-                    value={this.state.category}
-                    placeholder="e.g. groceries, taxi, night out..."
-                    onChange={this.handleChange}
-                  />
-                  <FormControl.Feedback />
-                </FormGroup>
-              </Col>
-              <Col sm={3}>
-                <ControlLabel>Group (optional)</ControlLabel>
-                <FormGroup controlId="formBasicText">
-                  <FormControl
-                    className="isaver-input"
-                    type="text"
-                    name="group"
-                    value={this.state.group}
-                    placeholder="e.g. bills or food"
-                    onChange={this.handleChange}
-                  />
-                  <FormControl.Feedback />
-                </FormGroup>
-              </Col>
-              <Col sm={2}>
-                <ControlLabel></ControlLabel>
-                <FormGroup controlId="formBasicText">
-                  {this.state.edit ? (
-                    <div className="isaver-add-amount">
-                      <Button
-                        className="pull-right isaver-button"
-                        onClick={this.clearData}
-                        bsStyle="warning">
-                        <i className="fa fa-close" aria-hidden="true"></i>
-                      </Button>
-                      <Button
-                        className="pull-right isaver-button"
-                        style={{marginRight:4}}
-                        onClick={this.addSpending}
-                        bsStyle="success">
-                        <i className="fa fa-check" aria-hidden="true"></i>
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="isaver-add-amount">
-                      <Button
-                        className="pull-right isaver-button"
-                        onClick={this.addSpending}
-                        bsStyle="info">
-                        <i className="fa fa-close" aria-hidden="true"></i> Add
-                      </Button>
-                    </div>
-                  )}
-                </FormGroup>
-              </Col>
+              <Inputs
+                handleChange={this.handleChange}
+                addSpending={this.addSpending}
+                clearData={this.clearData}
+                {...this.state}
+              />
               <Col sm={12}><span className="isaver-helptext">
                 ...if category doesn't exist, it will be automatically created and
                 visible next time you use the category field.

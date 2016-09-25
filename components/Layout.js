@@ -18,7 +18,6 @@ class Layout extends Component {
   }
 
   handleLoginClick() {
-    console.log('login')
     this.props.login()
   }
 
@@ -39,7 +38,7 @@ class Layout extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem>
+              <NavItem active={true}>
                 <i className="fa fa-plus-square" aria-hidden="true"></i>&nbsp;
                 Add Spendings
               </NavItem>

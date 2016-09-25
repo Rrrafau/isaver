@@ -1,4 +1,6 @@
 import {
+  CREATE_SPENDING,
+  CALCULATE_SPENDINGS,
   ALL_SPENDINGS,
   CURRENT_SPENDINGS,
   REMOVE_SPENDING,
@@ -77,37 +79,46 @@ function getSpendings() {
   }
 }
 
-function updateSpending(variables) {
-  let query = `
-  	mutation updateSpendingMutation($userID: String!, $category: String!, $amount: Float!, $createDate: Int!) {
-  	  updateSpending(userID: $userID, category: $category, amount: $amount, createDate: $createDate) {
-        _id
-    		userID
-    		category
-    		amount
-        createDate
-  	  }
-  	}
-  `;
+function createSpending(variables) {
+  return function (dispatch) {
+    dispatch({
+      type: CREATE_SPENDING,
+      spending: variables
+    })
+  }
+}
 
-  return dispatch => {
-  	return axios.post(GraphQLEndpoint, {
-  	  query,
-  	  variables,
-  	}).then((result) => {
-  	  if (result.data.errors) {
-    		dispatch({
-    		  type: UPDATE_SPENDING,
-    		  error: result.data.errors,
-    		})
-    		return;
-  	  }
+function updateSpending(variables) {
+  // let query = `
+  // 	mutation updateSpendingMutation($userID: String!, $category: String!, $amount: Float!, $createDate: Int!) {
+  // 	  updateSpending(userID: $userID, category: $category, amount: $amount, createDate: $createDate) {
+  //       _id
+  //   		userID
+  //   		category
+  //   		amount
+  //       createDate
+  // 	  }
+  // 	}
+  // `;
+  //
+  // return dispatch => {
+  // 	return axios.post(GraphQLEndpoint, {
+  // 	  query,
+  // 	  variables,
+  // 	}).then((result) => {
+  // 	  if (result.data.errors) {
+  //   		dispatch({
+  //   		  type: UPDATE_SPENDING,
+  //   		  error: result.data.errors,
+  //   		})
+  //   		return;
+  // 	  }
   	  dispatch({
     		type: UPDATE_SPENDING,
     		spending: result.data.data.updateSpending,
   	  });
-  	});
-  };
+  // 	});
+  // };
 }
 
 function removeSpending(variables) {
@@ -141,6 +152,7 @@ function removeSpending(variables) {
 }
 
 module.exports = {
+  createSpending,
   getCurrentSpendings,
   removeSpending,
   updateSpending,

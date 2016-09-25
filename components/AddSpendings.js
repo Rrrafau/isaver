@@ -2,6 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import {
+  createSpending
+} from '../actions/spendings'
+import {
   FormGroup,
   FormControl,
   Col,
@@ -103,13 +106,29 @@ class Inputs extends Component {
 }
 
 class SpendingsTable extends Component {
-  render() {
-    let i = 0, spendingsData;
+  calculateSpendings(list) {
+    let spendings = {}
 
-    if(Object.keys(this.props.spendings).length) {
+    _.each(list, function(li) {
+      if(spendings[li.group+'_'+li.category]) {
+        spendings[li.group+'_'+li.category].amount += li.amount
+      }
+      else {
+        spendings[li.group+'_'+li.category] = Object.assign({}, li)
+      }
+    })
+
+    return spendings
+  }
+
+  render() {
+    let i = 0, spendingsData,
+      spendings = this.calculateSpendings(this.props.list);
+
+    if(Object.keys(spendings).length) {
       spendingsData =
         <tbody>
-          {_.map(this.props.spendings, (spending, key) => {
+          {_.map(spendings, (spending, key) => {
             i++
             return (
               <tr key={'spendings'+key}>
@@ -141,7 +160,7 @@ class SpendingsTable extends Component {
           })}
           <tr>
             <td>Total</td>
-            <td colSpan="4">₱&nbsp;{ _.map ( this.props.spendings,
+            <td colSpan="4">₱&nbsp;{ _.map ( spendings,
                 (spending) => parseFloat(spending.amount)).reduce((a, b) => a + b, 0).formatMoney(2, '.', ',')
               }
             </td>
@@ -174,7 +193,7 @@ class SpendingsTable extends Component {
   }
 }
 
-export default class AddSpendings extends Component {
+class AddSpendings extends Component {
   constructor() {
     super()
     this.handleChange = this.handleChange.bind(this)
@@ -186,9 +205,7 @@ export default class AddSpendings extends Component {
       edit: '',
       amount: '',
       category: '',
-      group: '',
-      list: [],
-      spendings: {}
+      group: ''
     }
   }
 
@@ -200,10 +217,6 @@ export default class AddSpendings extends Component {
       if(li.category !== category || li.group !== group) {
         newList.push(li)
       }
-    })
-
-    this.setState({list: newList}, function() {
-      this.calculateSpendings()
     })
   }
 
@@ -226,36 +239,15 @@ export default class AddSpendings extends Component {
     let amount = parseFloat(this.state.amount)
     let category = this.state.category
     let group = this.state.group
-    let list = Object.assign([], this.state.list)
 
     if(!amount || !category) {
       alert('Please specify category and amount')
       return
     }
 
-    list.push({category, amount, group})
-
     this.clearData()
 
-    this.setState({list}, function() {
-      this.calculateSpendings()
-    })
-  }
-
-  calculateSpendings() {
-    let list = Object.assign([], this.state.list)
-    let spendings = {}
-
-    _.each(list, function(li) {
-      if(spendings[li.group+'_'+li.category]) {
-        spendings[li.group+'_'+li.category].amount += li.amount
-      }
-      else {
-        spendings[li.group+'_'+li.category] = Object.assign({}, li)
-      }
-    })
-
-    this.setState({spendings})
+    this.props.createSpending({category, amount, group})
   }
 
   handleChange(e) {
@@ -333,7 +325,7 @@ export default class AddSpendings extends Component {
                   <SpendingsTable
                     deleteSpending={this.deleteSpending}
                     editSpending={this.editSpending}
-                    {...this.state}
+                    list={this.props.list}
                   />
                 </Row>
               </Col>
@@ -360,3 +352,15 @@ export default class AddSpendings extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  const { list } = state.spendings
+  const { profile, isAuthenticated } = state.auth
+  return {
+    list, profile, isAuthenticated
+  }
+}
+
+export default connect(mapStateToProps, {
+  createSpending
+})(AddSpendings)

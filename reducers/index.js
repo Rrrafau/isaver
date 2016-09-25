@@ -8,7 +8,21 @@ const jwtDecode = require('jwt-decode')
 const initialState = {
   isAuthenticated: checkTokenExpiry(),
   profile: getProfile(),
-  error: ''
+  error: '',
+  spendings: {
+    list: [
+      {
+        category: 'groceries',
+        group: 'food',
+        amount: 123.4
+      },
+      {
+        category: 'groceries',
+        group: 'food',
+        amount: 153.4
+      }
+    ]
+  }
 }
 
 function checkTokenExpiry() {
@@ -63,7 +77,20 @@ function auth(state = initialState, action) {
     }
 }
 
+function spendings(state = initialState.spendings, action) {
+  let list = Object.assign([], state.list)
+  switch(action.type) {
+    case 'CREATE_SPENDING':
+      list.push(action.spending)
+
+      return Object.assign({}, state, {list})
+    default:
+      return state
+  }
+}
+
 const rootReducer = combineReducers({
+  spendings,
   routing,
   auth,
 })

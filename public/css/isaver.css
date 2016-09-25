@@ -1,6 +1,15 @@
 button {
   outline: none !important;
 }
+.isaver-control-label {
+  font-weight: 300;
+  font-style: italic;
+  color: #969696;
+}
+.isaver-edit-buttons {
+  display: inline-block;
+  margin-bottom: 16px;
+}
 .isaver-navbar-profile-picture {
   height: 36px;
   float: right;

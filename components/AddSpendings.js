@@ -28,7 +28,7 @@ class Inputs extends Component {
     return (
       <div>
         <Col sm={3}>
-          <ControlLabel>Amount (₱)</ControlLabel>
+          <ControlLabel className="isaver-control-label">Amount (₱)</ControlLabel>
           <FormGroup controlId="formBasicText">
             <FormControl
               className="isaver-input"
@@ -38,11 +38,10 @@ class Inputs extends Component {
               placeholder="e.g. 75.50"
               onChange={this.props.handleChange}
             />
-            <FormControl.Feedback />
           </FormGroup>
         </Col>
         <Col sm={4}>
-          <ControlLabel>Category</ControlLabel>
+          <ControlLabel className="isaver-control-label">Category</ControlLabel>
           <FormGroup controlId="formBasicText">
             <FormControl
               className="isaver-input"
@@ -52,11 +51,10 @@ class Inputs extends Component {
               placeholder="e.g. groceries, taxi, night out..."
               onChange={this.props.handleChange}
             />
-            <FormControl.Feedback />
           </FormGroup>
         </Col>
         <Col sm={3}>
-          <ControlLabel>Group (optional)</ControlLabel>
+          <ControlLabel className="isaver-control-label">Group (optional)</ControlLabel>
           <FormGroup controlId="formBasicText">
             <FormControl
               className="isaver-input"
@@ -66,10 +64,9 @@ class Inputs extends Component {
               placeholder="e.g. bills or food"
               onChange={this.props.handleChange}
             />
-            <FormControl.Feedback />
           </FormGroup>
         </Col>
-        <Col sm={2}>
+        <Col sm={2} className="isaver-edit-buttons">
           <ControlLabel></ControlLabel>
           <FormGroup controlId="formBasicText">
             {this.props.edit ? (
@@ -221,7 +218,7 @@ export default class AddSpendings extends Component {
 
   editSpending(category, group) {
     this.setState({
-      edit: group+'_'+category
+      edit: {group, category}
     })
   }
 
@@ -291,12 +288,36 @@ export default class AddSpendings extends Component {
           </Row>
           <Row>
             <form>
-              <Inputs
-                handleChange={this.handleChange}
-                addSpending={this.addSpending}
-                clearData={this.clearData}
-                {...this.state}
-              />
+              {this.state.edit ? (
+                this.state.list.map((li, key) => {
+                  if(li.group === this.state.edit.group
+                      && li.category === this.state.edit.category) {
+                    console.log(key)
+                    return (
+                      <Inputs
+                        handleChange={this.handleChange}
+                        addSpending={this.addSpending}
+                        clearData={this.clearData}
+                        category={li.category}
+                        group={li.group}
+                        amount={li.amount}
+                        key={key}
+                        edit={this.state.edit}
+                      />
+                    )
+                  }
+                  else {
+                    return null
+                  }
+                })
+              ) : (
+                <Inputs
+                  handleChange={this.handleChange}
+                  addSpending={this.addSpending}
+                  clearData={this.clearData}
+                  {...this.state}
+                />
+              )}
               <Col sm={12}><span className="isaver-helptext">
                 ...if category doesn't exist, it will be automatically created and
                 visible next time you use the category field.

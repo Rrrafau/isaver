@@ -28,7 +28,6 @@ class Layout extends Component {
 
   render() {
     const { isAuthenticated, profile } = this.props
-    console.log(this.props)
     return (
       <div>
         <Navbar inverse className="isaver-navbar">
@@ -40,18 +39,14 @@ class Layout extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <li>
-                <Link to="addspendings">
-                  <i className="fa fa-plus-square" aria-hidden="true"></i>&nbsp;
-                  Add Spendings
-                </Link>
-              </li>
-              <li>
-                <Link to="addspendings">
-                  <i className="fa fa-line-chart" aria-hidden="true"></i>&nbsp;
-                  Dashboard
-                </Link>
-              </li>
+              <NavItem>
+                <i className="fa fa-plus-square" aria-hidden="true"></i>&nbsp;
+                Add Spendings
+              </NavItem>
+              <NavItem>
+                <i className="fa fa-line-chart" aria-hidden="true"></i>&nbsp;
+                Dashboard
+              </NavItem>
             </Nav>
             { this.props.isAuthenticated ?
               (

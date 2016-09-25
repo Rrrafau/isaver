@@ -53,6 +53,7 @@ export function getSpendings(userID, timeline) {
 
   switch(timeline) {
     case 'day':
+    case 'today':
       start = moment().startOf('day')
       end = moment().endOf('day')
       break;
@@ -67,6 +68,8 @@ export function getSpendings(userID, timeline) {
   }
 
   db.spendings.ensureIndex({ userID: 1, createDate: 1 })
+
+  console.log({ $gte: start.unix(), $lte: end.unix() })
 
   if(timeline !== 'all') {
     return db.spendings.find({ userID,

@@ -409,6 +409,7 @@ class ManageSpendings extends Component {
                   className="isaver-select"
                   componentClass="select"
                   placeholder="select"
+                  style={{paddingTop:17}}
                   onChange={this.fetchData}
                   >
                   <option value="today">Today</option>

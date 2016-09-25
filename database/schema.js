@@ -58,8 +58,9 @@ const queryType = new graphql.GraphQLObjectType({
       type: new graphql.GraphQLList(spendingType),
       args: {
         userID: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        timeline: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
       },
-      resolve: (_, { userID }) => database.getSpendings(userID),
+      resolve: (_, { userID, timeline }) => database.getSpendings(userID, timeline),
     },
     currentSpendings: {
       type: new graphql.GraphQLList(spendingType),

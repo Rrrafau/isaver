@@ -11,38 +11,7 @@ const initialState = {
   error: '',
   spendings: {
     list: [
-      {
-        _id: 1,
-        category: 'oranges',
-        group: 'groceries',
-        amount: 123.1,
-        createDate: Math.floor(new Date().getTime() / 1000),
-        userID: 'radolasd@gmail.com'
-      },
-      {
-        _id: 2,
-        category: 'apples',
-        group: 'groceries',
-        amount: 153.4,
-        createDate: Math.floor(new Date().getTime() / 1000),
-        userID: 'radolasd@gmail.com'
-      },
-      {
-        _id: 3,
-        category: 'fuel',
-        group: 'car',
-        amount: 533.8,
-        createDate: Math.floor(new Date().getTime() / 1000),
-        userID: 'radolasd@gmail.com'
-      },
-      {
-        _id: 4,
-        category: 'oranges',
-        group: 'groceries',
-        amount: 13.3,
-        createDate: Math.floor(new Date().getTime() / 1000),
-        userID: 'radolasd@gmail.com'
-      },
+      
     ]
   }
 }
@@ -146,6 +115,10 @@ function spendings(state = initialState.spendings, action) {
       })
 
       return Object.assign({}, state, {list: newList})
+
+    case 'ALL_SPENDINGS':
+
+      return Object.assign({}, state, {list: action.list})
     default:
       return state
   }

@@ -48,21 +48,29 @@ function getCurrentSpendings(variables) {
   }
 }
 
-function getSpendings() {
+function getSpendings(variables) {
   let query = `
-  	query getSpendings {
-  	  spendings {
-    		userID
+    query getSpendings(
+      $userID: String!
+      $timeline: String!
+    ) {
+      spendings(
+        userID: $userID
+        timeline: $timeline
+      ) {
+        _id
+        userID
         category
         amount
+        group
         createDate
-  	  }
-  	}
+      }
+    }
   `
 
   return dispatch => {
   	return axios.post(GraphQLEndpoint, {
-  	  query
+  	  query, variables
   	}).then((result) => {
   	  if (result.data.errors) {
     		dispatch({
@@ -74,7 +82,7 @@ function getSpendings() {
 
   	  dispatch({
     		type: ALL_SPENDINGS,
-    		spendings: result.data.data.spendings,
+    		list: result.data.data.spendings,
   	  })
   	})
   }
@@ -119,21 +127,66 @@ function createSpending(variables) {
   }
 }
 
-function updateSingleSpending(spending) {
-  return function (dispatch) {
-    dispatch({
-      type: UPDATE_SPENDING,
-      spending
+function updateSingleSpending(variables) {
+  let query = `
+  	mutation updateSpendingMutation(
+      $_id: String!
+      $category: String!
+      $group: String!
+      $userID: String!
+      $createDate: Int!
+      $amount: Float!
+    ) {
+  	  updateSpending(
+        _id: $_id
+        category: $category
+        amount: $amount
+        group: $group
+        userID: $userID
+        createDate: $createDate
+      ) {
+    		_id
+    		category
+    		amount
+        userID
+        createDate
+        group
+  	  }
+  	}
+    `;
+
+  return dispatch => {
+  	return axios.post(GraphQLEndpoint, {
+  	  query,
+  	  variables,
+  	}).then((result) => {
+      dispatch({
+        type: UPDATE_SPENDING,
+        spending: result.data.data.updateSpending
+      })
     })
   }
 }
 
-function removeSingleSpending(_id) {
-  return function (dispatch) {
-    dispatch({
-      type: REMOVE_SPENDING,
-      _id: _id
-    })
+function removeSingleSpending(variables) {
+  let query = `
+  	mutation removeSpendingMutation($_id: String!) {
+  	  removeSpending(_id: $_id) {
+  		  _id
+  	  }
+  	}
+    `;
+
+  return dispatch => {
+  	return axios.post(GraphQLEndpoint, {
+  	  query,
+  	  variables
+  	}).then((result) => {
+  	  dispatch({
+    		type: REMOVE_SPENDING,
+    		_id: result.data.data.removeSpending._id,
+  	  })
+  	})
   }
 }
 

@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import axios from 'axios'
 import _ from 'lodash'
 import {
   removeSingleSpending,
   updateSingleSpending,
   removeSpendings,
-  createSpending
+  createSpending,
+  getSpendings
 } from '../actions/spendings'
 import {
   FormGroup,
@@ -182,7 +184,17 @@ class SpendingsTable extends Component {
   render() {
     let i = 0, spendingsData,
       spendings = this.calculateSpendings(this.props.list);
-
+    // @todo add later if needed
+    /*
+    <Button
+      className="pull-right"
+      onClick={() => this.props.deleteSpending(
+        spending.category, spending.group
+      )}
+      bsStyle="danger">
+      Delete
+    </Button>
+    */
     if(Object.keys(spendings).length) {
       spendingsData =
         <tbody>
@@ -198,18 +210,9 @@ class SpendingsTable extends Component {
                 <td>
                   <Button
                     className="pull-right"
-                    onClick={() => this.props.deleteSpending(
-                      spending.category, spending.group
-                    )}
-                    bsStyle="danger">
-                    Delete
-                  </Button>
-                  <Button
-                    className="pull-right"
                     onClick={() => this.props.editSpending(
                       spending.category, spending.group
                     )}
-                    style={{marginRight: 16}}
                     bsStyle="warning">
                     Edit
                   </Button>
@@ -244,7 +247,7 @@ class SpendingsTable extends Component {
             <th>Category</th>
             <th>Group</th>
             <th># Items</th>
-            <th><span className="pull-right">Edit</span></th>
+            <th></th>
           </tr>
         </thead>
         {spendingsData}
@@ -261,6 +264,7 @@ class ManageSpendings extends Component {
     this.deleteSingleSpending = this.deleteSingleSpending.bind(this)
     this.editSpending = this.editSpending.bind(this)
     this.finishEditing = this.finishEditing.bind(this)
+    this.fetchData = this.fetchData.bind(this)
     this.state = {
       editInputs: [],
     }
@@ -268,6 +272,13 @@ class ManageSpendings extends Component {
 
   finishEditing() {
     this.setState({editInputs: []})
+  }
+
+  componentWillMount() {
+    this.props.getSpendings({
+      userID: this.props.profile.email,
+      timeline: 'day'
+    })
   }
 
   updateSpending(spending) {
@@ -280,7 +291,7 @@ class ManageSpendings extends Component {
   }
 
   deleteSingleSpending(_id) {
-    this.props.removeSingleSpending(_id)
+    this.props.removeSingleSpending({_id})
 
     let editInputs = Object.assign([], this.state.editInputs)
 
@@ -312,6 +323,13 @@ class ManageSpendings extends Component {
     })
   }
 
+  fetchData(e) {
+    this.props.getSpendings({
+      userID: this.props.profile.email,
+      timeline: e.target.value
+    })
+  }
+
   handleChange(e) {
     let change = {}
     change[e.target.name] = e.target.value
@@ -335,6 +353,15 @@ class ManageSpendings extends Component {
             </span></h1>
           </div>
         </div>
+      {(!this.props.isAuthenticated) ? (
+        <div className="container">
+          <Row>
+            <Col xs={12}>
+              <h1>Please Log In.</h1>
+            </Col>
+          </Row>
+        </div>
+      ) : (
         <div className="container">
           <Row>
             <Col xs={12}>
@@ -373,18 +400,30 @@ class ManageSpendings extends Component {
           </Row>
           <hr></hr>
           <Row>
+            <Col sm={6}>
+              <h3>Current Spendings</h3>
+            </Col>
+            <Col sm={6}>
+              <FormGroup controlId="formBasicText">
+                <FormControl
+                  className="isaver-select"
+                  componentClass="select"
+                  placeholder="select"
+                  onChange={this.fetchData}
+                  >
+                  <option value="today">Today</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="all">All</option>
+                </FormControl>
+              </FormGroup>
+            </Col>
             <Col sm={12}>
-              <Col sm={12}>
-                <Row>
-                  <h3>Current Spendings</h3>
-                  <SpendingsTable
-                    deleteSpending={this.deleteSpending}
-                    editSpending={this.editSpending}
-                    list={this.props.list}
-                  />
-                </Row>
-              </Col>
-              <Col sm={10}></Col>
+              <SpendingsTable
+                deleteSpending={this.deleteSpending}
+                editSpending={this.editSpending}
+                list={this.props.list}
+              />
             </Col>
           </Row>
           <hr></hr>
@@ -398,6 +437,7 @@ class ManageSpendings extends Component {
             </Col>
           </Row>
         </div>
+      )}
       </div>
     )
   }
@@ -415,5 +455,6 @@ export default connect(mapStateToProps, {
   removeSingleSpending,
   updateSingleSpending,
   removeSpendings,
-  createSpending
+  createSpending,
+  getSpendings
 })(ManageSpendings)

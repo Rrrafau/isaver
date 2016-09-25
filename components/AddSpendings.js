@@ -246,16 +246,15 @@ export default class AddSpendings extends Component {
   }
 
   calculateSpendings() {
-    let list = this.state.list
+    let list = Object.assign([], this.state.list)
     let spendings = {}
 
     _.each(list, function(li) {
-
       if(spendings[li.group+'_'+li.category]) {
         spendings[li.group+'_'+li.category].amount += li.amount
       }
       else {
-        spendings[li.group+'_'+li.category] = li
+        spendings[li.group+'_'+li.category] = Object.assign({}, li)
       }
     })
 

@@ -80,11 +80,41 @@ function getSpendings() {
   }
 }
 
-function createSpending(spending) {
-  return function (dispatch) {
-    dispatch({
-      type: CREATE_SPENDING,
-      spending
+function createSpending(variables) {
+  let query = `
+  	mutation createSpendingMutation(
+      $category: String!
+      $group: String!
+      $userID: String!
+      $createDate: Int!
+      $amount: Float!
+    ) {
+  	  createSpending(
+        category: $category
+        amount: $amount
+        group: $group
+        userID: $userID
+        createDate: $createDate
+      ) {
+    		_id
+    		category
+    		amount
+        userID
+        createDate
+        group
+  	  }
+  	}
+    `;
+
+  return dispatch => {
+  	return axios.post(GraphQLEndpoint, {
+  	  query,
+  	  variables,
+  	}).then((result) => {
+      dispatch({
+        type: CREATE_SPENDING,
+        spending: result.data.data.createSpending
+      })
     })
   }
 }

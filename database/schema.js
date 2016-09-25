@@ -20,6 +20,13 @@ let spendingType = new graphql.GraphQLObjectType({
         return category;
       }
     },
+    group: {
+      type: graphql.GraphQLString,
+      resolve: function(_ref) {
+        let group = _ref.group;
+        return group;
+      }
+    },
     amount: {
       type: graphql.GraphQLFloat,
       resolve: function(_ref3) {
@@ -71,17 +78,30 @@ const queryType = new graphql.GraphQLObjectType({
 const mutationType = new graphql.GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
+    createSpending: {
+      type: spendingType,
+  	  args: {
+  		  category: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        group: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        amount: { type: new graphql.GraphQLNonNull(graphql.GraphQLFloat) },
+        createDate: { type: new graphql.GraphQLNonNull(graphql.GraphQLInt) },
+        userID: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
+  	  },
+      resolve: (_, { category, group, amount, createDate, userID }) =>
+  				  database.createSpending( category, group, amount, createDate, userID ),
+    },
     updateSpending: {
   	  type: spendingType,
   	  args: {
         _id: { type: graphql.GraphQLString },
   		  category: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        group: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
         amount: { type: new graphql.GraphQLNonNull(graphql.GraphQLFloat) },
         createDate: { type: new graphql.GraphQLNonNull(graphql.GraphQLInt) },
         userID: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
   	  },
-  	  resolve: (_, { _id, category, amount, createDate, userID }) =>
-  				  database.updateSpending( _id, category, amount, createDate, userID ),
+  	  resolve: (_, { _id, category, group, amount, createDate, userID }) =>
+  				  database.updateSpending( _id, category, group, amount, createDate, userID ),
   	},
     removeSpending: {
   	  type: spendingType,

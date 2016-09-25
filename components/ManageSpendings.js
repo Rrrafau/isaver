@@ -47,11 +47,15 @@ class Inputs extends Component {
     let group = this.state.group
 
     if(!amount || !category) {
-      alert('Please specify category and amount')
+      alert('Please specify an amount, category and group')
       return
     }
 
-    this.props.createSpending({category, amount, group})
+    this.props.createSpending({
+      createDate: Math.floor(new Date().getTime() / 1000),
+      userID: this.props.profile.email,
+      category, amount, group
+    })
 
     this.clearData()
   }
@@ -100,20 +104,20 @@ class Inputs extends Component {
               type="text"
               name="category"
               value={this.state.category}
-              placeholder="e.g. groceries, taxi, night out..."
+              placeholder="e.g. oranges"
               onChange={this.handleChange}
             />
           </FormGroup>
         </Col>
         <Col sm={3}>
-          <ControlLabel className="isaver-control-label">Group (optional)</ControlLabel>
+          <ControlLabel className="isaver-control-label">Group</ControlLabel>
           <FormGroup controlId="formBasicText">
             <FormControl
               className="isaver-input"
               type="text"
               name="group"
               value={this.state.group}
-              placeholder="e.g. bills or food"
+              placeholder="e.g. groceries"
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -165,9 +169,10 @@ class SpendingsTable extends Component {
     _.each(list, function(li) {
       if(spendings[li.group+'_'+li.category]) {
         spendings[li.group+'_'+li.category].amount += li.amount
+        spendings[li.group+'_'+li.category].count ++
       }
       else {
-        spendings[li.group+'_'+li.category] = Object.assign({}, li)
+        spendings[li.group+'_'+li.category] = Object.assign({}, li, {count: 1})
       }
     })
 
@@ -189,6 +194,7 @@ class SpendingsTable extends Component {
                 <td>₱&nbsp;{parseFloat(spending.amount).formatMoney(2, '.', ',')}</td>
                 <td>{_.capitalize(spending.category)}</td>
                 <td>{_.capitalize(spending.group)}</td>
+                <td>{spending.count}</td>
                 <td>
                   <Button
                     className="pull-right"
@@ -213,7 +219,7 @@ class SpendingsTable extends Component {
           })}
           <tr>
             <td>Total</td>
-            <td colSpan="4">₱&nbsp;{ _.map ( spendings,
+            <td colSpan="5">₱&nbsp;{ _.map ( spendings,
                 (spending) => parseFloat(spending.amount)).reduce((a, b) => a + b, 0).formatMoney(2, '.', ',')
               }
             </td>
@@ -224,7 +230,7 @@ class SpendingsTable extends Component {
       spendingsData =
       <tbody>
         <tr>
-          <td colSpan="5" className="isaver-table-no-data">This table gets populated as you add your spendings.</td>
+          <td colSpan="6" className="isaver-table-no-data">This table gets populated as you add your spendings.</td>
         </tr>
       </tbody>
     }
@@ -237,6 +243,7 @@ class SpendingsTable extends Component {
             <th>Amount</th>
             <th>Category</th>
             <th>Group</th>
+            <th># Items</th>
             <th><span className="pull-right">Edit</span></th>
           </tr>
         </thead>
@@ -299,7 +306,7 @@ class ManageSpendings extends Component {
         return null
       }
     }).filter((input) => input)
-    console.log(editInputs)
+
     this.setState({
       editInputs
     })
@@ -341,6 +348,7 @@ class ManageSpendings extends Component {
               ) : (
                 <Inputs
                   spending={{}}
+                  profile={this.props.profile}
                   createSpending={this.props.createSpending}
                 />
               )}
@@ -359,7 +367,7 @@ class ManageSpendings extends Component {
               ) : null }
               <Col sm={12}><span className="isaver-helptext">
                 ...if category or group doesn't exist, it will be automatically created and
-                visible next time you use the category field.
+                visible next time you use the fields.
               </span></Col>
             </form>
           </Row>
@@ -377,11 +385,6 @@ class ManageSpendings extends Component {
                 </Row>
               </Col>
               <Col sm={10}></Col>
-            </Col>
-            <Col sm={2} smOffset={10}>
-              <Button className="pull-right isaver-button" bsStyle="success">
-                <i className="fa fa-plus" aria-hidden="true"></i> Submit
-              </Button>
             </Col>
           </Row>
           <hr></hr>

@@ -2,11 +2,19 @@ var promisedMongo = require('promised-mongo');
 
 var db = promisedMongo('mongodb://139.162.43.212/smartsaver');
 
-
-export function updateSpending(_id, category, amount, createDate, userID) {
+export function createSpending(category, group, amount, createDate, userID) {
   let spendings = db.collection('spendings')
   let spending = {
-	   createDate, category, amount, userID
+	   createDate, group, category, amount, userID
+  }
+
+  return db.spendings.insert(spending)
+}
+
+export function updateSpending(_id, category, group, amount, createDate, userID) {
+  let spendings = db.collection('spendings')
+  let spending = {
+	   createDate, group, category, amount, userID
   }
 
   db.spendings.ensureIndex({

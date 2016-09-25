@@ -12,14 +12,22 @@ const initialState = {
   spendings: {
     list: [
       {
+        _id: 1,
         category: 'groceries',
         group: 'food',
         amount: 123.4
       },
       {
+        _id: 2,
         category: 'groceries',
         group: 'food',
         amount: 153.4
+      },
+      {
+        _id: 3,
+        category: 'fuel',
+        group: 'car',
+        amount: 533.4
       }
     ]
   }
@@ -77,13 +85,53 @@ function auth(state = initialState, action) {
     }
 }
 
+function getIndexOfSpendingItem(_id, list) {
+  let index = -1;
+
+  for (let i = 0; i < list.length; i++) {
+  	if (list[i]._id === _id) {
+  	  index = i;
+  	  break;
+  	}
+  }
+
+  return index;
+}
+
 function spendings(state = initialState.spendings, action) {
-  let list = Object.assign([], state.list)
+  let list = Object.assign([], state.list), index = -1
+
   switch(action.type) {
     case 'CREATE_SPENDING':
-      list.push(action.spending)
+
+      list.push(Object.assign({}, action.spending, {_id: new Date().getTime()}))
 
       return Object.assign({}, state, {list})
+    case 'UPDATE_SPENDING':
+      index = getIndexOfSpendingItem(action.spending._id, list)
+
+      list[index] = Object.assign({}, action.spending)
+
+      return Object.assign({}, state, {list})
+    case 'REMOVE_SPENDING':
+      index = getIndexOfSpendingItem(action._id, list)
+
+      return Object.assign({}, state, {
+    		list: [
+    		  ...list.slice(0, index),
+    		  ...list.slice(index + 1)
+    		]
+  	  })
+    case 'REMOVE_SPENDINGS':
+      let newList = []
+
+      _.each(list, function(li) {
+        if(li.category !== action.spending.category || li.group !== action.spending.group) {
+          newList.push(li)
+        }
+      })
+
+      return Object.assign({}, state, {list: newList})
     default:
       return state
   }

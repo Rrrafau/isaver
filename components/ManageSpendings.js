@@ -2,6 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import {
+  removeSingleSpending,
+  updateSingleSpending,
+  removeSpendings,
   createSpending
 } from '../actions/spendings'
 import {
@@ -27,6 +30,51 @@ Number.prototype.formatMoney = function(c, d, t){
 };
 
 class Inputs extends Component {
+  constructor() {
+    super()
+    this.handleChange = this.handleChange.bind(this)
+    this.addSpending = this.addSpending.bind(this)
+    this.state = {
+      amount: '',
+      group: '',
+      category: ''
+    }
+  }
+
+  addSpending() {
+    let amount = parseFloat(this.state.amount)
+    let category = this.state.category
+    let group = this.state.group
+
+    if(!amount || !category) {
+      alert('Please specify category and amount')
+      return
+    }
+
+    this.props.createSpending({category, amount, group})
+
+    this.clearData()
+  }
+
+  clearData() {
+    this.setState({
+      amount: '',
+      group: '',
+      category: ''
+    })
+  }
+
+  componentWillMount() {
+    this.setState(this.props.spending)
+  }
+
+  handleChange(e) {
+    let change = {}
+    change[e.target.name] = e.target.value
+
+    this.setState( change )
+  }
+
   render() {
     return (
       <div>
@@ -35,11 +83,12 @@ class Inputs extends Component {
           <FormGroup controlId="formBasicText">
             <FormControl
               className="isaver-input"
-              type="number"
+              type="text"
               name="amount"
-              value={this.props.amount}
+              step="0.01"
+              value={this.state.amount}
               placeholder="e.g. 75.50"
-              onChange={this.props.handleChange}
+              onChange={this.handleChange}
             />
           </FormGroup>
         </Col>
@@ -50,9 +99,9 @@ class Inputs extends Component {
               className="isaver-input"
               type="text"
               name="category"
-              value={this.props.category}
+              value={this.state.category}
               placeholder="e.g. groceries, taxi, night out..."
-              onChange={this.props.handleChange}
+              onChange={this.handleChange}
             />
           </FormGroup>
         </Col>
@@ -63,9 +112,9 @@ class Inputs extends Component {
               className="isaver-input"
               type="text"
               name="group"
-              value={this.props.group}
+              value={this.state.group}
               placeholder="e.g. bills or food"
-              onChange={this.props.handleChange}
+              onChange={this.handleChange}
             />
           </FormGroup>
         </Col>
@@ -76,25 +125,29 @@ class Inputs extends Component {
               <div className="isaver-add-amount">
                 <Button
                   className="pull-right isaver-button"
-                  onClick={this.props.clearData}
-                  bsStyle="warning">
-                  <i className="fa fa-close" aria-hidden="true"></i>
+                  onClick={() => this.props.deleteSingleSpending(
+                    this.state._id
+                  )}
+                  bsStyle="danger">
+                  <i className="fa fa-trash" aria-hidden="true"></i>
                 </Button>
                 <Button
                   className="pull-right isaver-button"
                   style={{marginRight:4}}
-                  onClick={this.props.addSpending}
-                  bsStyle="success">
-                  <i className="fa fa-check" aria-hidden="true"></i>
+                  onClick={() => this.props.updateSpending(
+                    Object.assign({}, this.state)
+                  )}
+                  bsStyle="warning">
+                  <i className="fa fa-save" aria-hidden="true"></i>
                 </Button>
               </div>
             ) : (
               <div className="isaver-add-amount">
                 <Button
                   className="pull-right isaver-button"
-                  onClick={this.props.addSpending}
+                  onClick={this.addSpending}
                   bsStyle="info">
-                  <i className="fa fa-close" aria-hidden="true"></i> Add
+                  <i className="fa fa-plus" aria-hidden="true"></i> Add
                 </Button>
               </div>
             )}
@@ -193,61 +246,63 @@ class SpendingsTable extends Component {
   }
 }
 
-class AddSpendings extends Component {
+class ManageSpendings extends Component {
   constructor() {
     super()
-    this.handleChange = this.handleChange.bind(this)
-    this.addSpending = this.addSpending.bind(this)
+    this.updateSpending = this.updateSpending.bind(this)
     this.deleteSpending = this.deleteSpending.bind(this)
+    this.deleteSingleSpending = this.deleteSingleSpending.bind(this)
     this.editSpending = this.editSpending.bind(this)
-    this.clearData = this.clearData.bind(this)
+    this.finishEditing = this.finishEditing.bind(this)
     this.state = {
-      edit: '',
-      amount: '',
-      category: '',
-      group: ''
+      editInputs: [],
     }
+  }
+
+  finishEditing() {
+    this.setState({editInputs: []})
+  }
+
+  updateSpending(spending) {
+    spending.amount = parseFloat(spending.amount)
+    this.props.updateSingleSpending(spending)
   }
 
   deleteSpending(category, group) {
-    let list = Object.assign([], this.state.list)
-    let newList = []
-
-    _.each(list, function(li) {
-      if(li.category !== category || li.group !== group) {
-        newList.push(li)
-      }
-    })
+    this.props.removeSpendings({category, group})
   }
 
-  clearData() {
-      this.setState({
-        edit: '',
-        amount: '',
-        group: '',
-        category: ''
-      })
+  deleteSingleSpending(_id) {
+    this.props.removeSingleSpending(_id)
+
+    let editInputs = Object.assign([], this.state.editInputs)
+
+    editInputs = editInputs.filter((input) => input.key != _id)
+
+    this.setState({editInputs})
   }
 
   editSpending(category, group) {
+    let editInputs = this.props.list.map((li) => {
+      if(li.group === group && li.category === category) {
+        return (
+          <Inputs
+            deleteSingleSpending={this.deleteSingleSpending}
+            updateSpending={this.updateSpending}
+            spending={li}
+            key={li._id}
+            edit={true}
+          />
+        )
+      }
+      else {
+        return null
+      }
+    }).filter((input) => input)
+    console.log(editInputs)
     this.setState({
-      edit: {group, category}
+      editInputs
     })
-  }
-
-  addSpending() {
-    let amount = parseFloat(this.state.amount)
-    let category = this.state.category
-    let group = this.state.group
-
-    if(!amount || !category) {
-      alert('Please specify category and amount')
-      return
-    }
-
-    this.clearData()
-
-    this.props.createSpending({category, amount, group})
   }
 
   handleChange(e) {
@@ -263,55 +318,47 @@ class AddSpendings extends Component {
         <div className="isaver-header">
           <div className="container">
           <h1><i className="fa fa-balance-scale fa-lg"></i> Add your expenses&nbsp;
-            <span style={{
+            <span
+              style={{
                 fontStyle: 'italic',
                 color: '#c9d3e6',
-                fontWeight: '300'}}
+                fontWeight: '300'
+              }}
                 >
-                (demo)
             </span></h1>
           </div>
         </div>
         <div className="container">
           <Row>
             <Col xs={12}>
-              <h3>Enter the amount and category</h3>
+              <h3>Enter the amount, category and group</h3>
             </Col>
           </Row>
           <Row>
             <form>
-              {this.state.edit ? (
-                this.state.list.map((li, key) => {
-                  if(li.group === this.state.edit.group
-                      && li.category === this.state.edit.category) {
-                    console.log(key)
-                    return (
-                      <Inputs
-                        handleChange={this.handleChange}
-                        addSpending={this.addSpending}
-                        clearData={this.clearData}
-                        category={li.category}
-                        group={li.group}
-                        amount={li.amount}
-                        key={key}
-                        edit={this.state.edit}
-                      />
-                    )
-                  }
-                  else {
-                    return null
-                  }
-                })
+              {this.state.editInputs.length ? (
+                this.state.editInputs
               ) : (
                 <Inputs
-                  handleChange={this.handleChange}
-                  addSpending={this.addSpending}
-                  clearData={this.clearData}
-                  {...this.state}
+                  spending={{}}
+                  createSpending={this.props.createSpending}
                 />
               )}
+              {this.state.editInputs.length ? (
+              <Col sm={12}>
+                <Button
+                  style={{marginBottom: 4}}
+                  className="pull-right isaver-button"
+                  bsStyle="success"
+                  onClick={this.finishEditing}
+                  >
+                  <i className="fa fa-check" aria-hidden="true"></i>
+                  &nbsp;Done
+                </Button>
+              </Col>
+              ) : null }
               <Col sm={12}><span className="isaver-helptext">
-                ...if category doesn't exist, it will be automatically created and
+                ...if category or group doesn't exist, it will be automatically created and
                 visible next time you use the category field.
               </span></Col>
             </form>
@@ -362,5 +409,8 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
+  removeSingleSpending,
+  updateSingleSpending,
+  removeSpendings,
   createSpending
-})(AddSpendings)
+})(ManageSpendings)

@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import Layout from '../components/Layout'
 import Landing from '../components/Landing'
-import AddSpendings from '../components/AddSpendings'
+import ManageSpendings from '../components/ManageSpendings'
 import configureStore from '../store/configureStore'
 
 const store = configureStore()
@@ -17,8 +17,8 @@ if(typeof history !== 'undefined') {
 
 const appRoutes = () => (
   <Route path="/" component={Layout}>
-    <IndexRoute component={AddSpendings} />
-    <Route path="addspendings" component={AddSpendings} />
+    <IndexRoute component={ManageSpendings} />
+    <Route path="spendings" component={ManageSpendings} />
   </Route>
 )
 

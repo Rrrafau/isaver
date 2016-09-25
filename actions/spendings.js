@@ -4,6 +4,7 @@ import {
   ALL_SPENDINGS,
   CURRENT_SPENDINGS,
   REMOVE_SPENDING,
+  REMOVE_SPENDINGS,
   UPDATE_SPENDING
 } from './actionTypes/spendings';
 
@@ -79,82 +80,47 @@ function getSpendings() {
   }
 }
 
-function createSpending(variables) {
+function createSpending(spending) {
   return function (dispatch) {
     dispatch({
       type: CREATE_SPENDING,
-      spending: variables
+      spending
     })
   }
 }
 
-function updateSpending(variables) {
-  // let query = `
-  // 	mutation updateSpendingMutation($userID: String!, $category: String!, $amount: Float!, $createDate: Int!) {
-  // 	  updateSpending(userID: $userID, category: $category, amount: $amount, createDate: $createDate) {
-  //       _id
-  //   		userID
-  //   		category
-  //   		amount
-  //       createDate
-  // 	  }
-  // 	}
-  // `;
-  //
-  // return dispatch => {
-  // 	return axios.post(GraphQLEndpoint, {
-  // 	  query,
-  // 	  variables,
-  // 	}).then((result) => {
-  // 	  if (result.data.errors) {
-  //   		dispatch({
-  //   		  type: UPDATE_SPENDING,
-  //   		  error: result.data.errors,
-  //   		})
-  //   		return;
-  // 	  }
-  	  dispatch({
-    		type: UPDATE_SPENDING,
-    		spending: result.data.data.updateSpending,
-  	  });
-  // 	});
-  // };
+function updateSingleSpending(spending) {
+  return function (dispatch) {
+    dispatch({
+      type: UPDATE_SPENDING,
+      spending
+    })
+  }
 }
 
-function removeSpending(variables) {
-  let query = `
-  	mutation removeSpendingMutation($_id: String!) {
-  	  removeSpending(_id: $_id) {
-  		  _id
-  	  }
-  	}
-  `;
+function removeSingleSpending(_id) {
+  return function (dispatch) {
+    dispatch({
+      type: REMOVE_SPENDING,
+      _id: _id
+    })
+  }
+}
 
-  return dispatch => {
-  	return axios.post(GraphQLEndpoint, {
-  	  query,
-  	  variables
-  	}).then((result) => {
-  	  if (result.data.errors) {
-    		dispatch({
-    		  type: REMOVE_SPENDING,
-    		  error: result.data.errors,
-    		})
-    		return;
-  	  }
-
-  	  dispatch({
-    		type: REMOVE_SPENDING,
-    		spending: result.data.data.removeSpending,
-  	  });
-  	});
-  };
+function removeSpendings(spending) {
+  return function (dispatch) {
+	  dispatch({
+  		type: REMOVE_SPENDINGS,
+  		spending
+	  })
+  }
 }
 
 module.exports = {
   createSpending,
+  removeSingleSpending,
   getCurrentSpendings,
-  removeSpending,
-  updateSpending,
+  removeSpendings,
+  updateSingleSpending,
   getSpendings
 }

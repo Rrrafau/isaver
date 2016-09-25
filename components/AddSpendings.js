@@ -30,23 +30,28 @@ class SpendingsTable extends Component {
     if(Object.keys(this.props.spendings).length) {
       spendingsData =
         <tbody>
-          {_.map(this.props.spendings, (amount, category) => {
+          {_.map(this.props.spendings, (spending, key) => {
             i++
             return (
-              <tr>
+              <tr key={'spendings'+key}>
                 <td>{i}</td>
-                <td>₱&nbsp;{amount.formatMoney(2, '.', ',')}</td>
-                <td>{_.capitalize(category)}</td>
+                <td>₱&nbsp;{parseFloat(spending.amount).formatMoney(2, '.', ',')}</td>
+                <td>{_.capitalize(spending.category)}</td>
+                <td>{_.capitalize(spending.group)}</td>
                 <td>
                   <Button
                     className="pull-right"
-                    onClick={() => this.props.deleteSpending(category, amount)}
+                    onClick={() => this.props.deleteSpending(
+                      spending.category, spending.group
+                    )}
                     bsStyle="danger">
                     Delete
                   </Button>
                   <Button
                     className="pull-right"
-                    onClick={() => this.props.editSpending(category, amount)}
+                    onClick={() => this.props.editSpending(
+                      spending.category, spending.group
+                    )}
                     style={{marginRight: 16}}
                     bsStyle="warning">
                     Edit
@@ -57,8 +62,8 @@ class SpendingsTable extends Component {
           })}
           <tr>
             <td>Total</td>
-            <td colSpan="3">₱&nbsp;{ _.map ( this.props.spendings,
-                (amount) => amount).reduce((a, b) => a + b, 0).formatMoney(2, '.', ',')
+            <td colSpan="4">₱&nbsp;{ _.map ( this.props.spendings,
+                (spending) => parseFloat(spending.amount)).reduce((a, b) => a + b, 0).formatMoney(2, '.', ',')
               }
             </td>
           </tr>
@@ -68,7 +73,7 @@ class SpendingsTable extends Component {
       spendingsData =
       <tbody>
         <tr>
-          <td colSpan="4" className="isaver-table-no-data">This table gets populated as you add your spendings.</td>
+          <td colSpan="5" className="isaver-table-no-data">This table gets populated as you add your spendings.</td>
         </tr>
       </tbody>
     }
@@ -80,6 +85,7 @@ class SpendingsTable extends Component {
             <th>#</th>
             <th>Amount</th>
             <th>Category</th>
+            <th>Group</th>
             <th><span className="pull-right">Edit</span></th>
           </tr>
         </thead>
@@ -101,56 +107,77 @@ export default class AddSpendings extends Component {
       edit: '',
       amount: '',
       category: '',
+      group: '',
+      list: [],
       spendings: {}
     }
   }
 
-  deleteSpending(category, amount) {
-    let spendings = Object.assign({}, this.state.spendings)
+  deleteSpending(category, group) {
+    let list = Object.assign([], this.state.list)
+    let newList = []
 
-    delete spendings[category]
+    _.each(list, function(li) {
+      if(li.category !== category || li.group !== group) {
+        newList.push(li)
+      }
+    })
 
-    this.setState({spendings})
+    this.setState({list: newList}, function() {
+      this.calculateSpendings()
+    })
   }
 
   clearData() {
       this.setState({
         edit: '',
         amount: '',
+        group: '',
         category: ''
       })
   }
 
-  editSpending(category, amount) {
-
+  editSpending(category, group) {
     this.setState({
-      amount, category, edit: category
+      edit: group+'_'+category
     })
   }
 
   addSpending() {
-    let amount = this.state.amount
+    let amount = parseFloat(this.state.amount)
     let category = this.state.category
-    let spendings = Object.assign({}, this.state.spendings)
+    let group = this.state.group
+    let list = Object.assign([], this.state.list)
 
     if(!amount || !category) {
       alert('Please specify category and amount')
       return
     }
 
-    if(spendings[category]) {
-      if(this.state.edit === category) {
-        spendings[category] = parseFloat(amount)
+    list.push({category, amount, group})
+
+    this.clearData()
+
+    this.setState({list}, function() {
+      this.calculateSpendings()
+    })
+  }
+
+  calculateSpendings() {
+    let list = this.state.list
+    let spendings = {}
+
+    _.each(list, function(li) {
+
+      if(spendings[li.group+'_'+li.category]) {
+        spendings[li.group+'_'+li.category].amount += li.amount
       }
       else {
-        spendings[category] += parseFloat(amount)
+        spendings[li.group+'_'+li.category] = li
       }
-    }
-    else {
-      spendings[category] = parseFloat(amount)
-    }
+    })
 
-    this.setState({spendings, amount: '', category: '', edit: ''})
+    this.setState({spendings})
   }
 
   handleChange(e) {
@@ -183,7 +210,7 @@ export default class AddSpendings extends Component {
           </Row>
           <Row>
             <form>
-              <Col sm={4}>
+              <Col sm={3}>
                 <ControlLabel>Amount (₱)</ControlLabel>
                 <FormGroup controlId="formBasicText">
                   <FormControl
@@ -197,7 +224,7 @@ export default class AddSpendings extends Component {
                   <FormControl.Feedback />
                 </FormGroup>
               </Col>
-              <Col sm={6}>
+              <Col sm={4}>
                 <ControlLabel>Category</ControlLabel>
                 <FormGroup controlId="formBasicText">
                   <FormControl
@@ -206,6 +233,20 @@ export default class AddSpendings extends Component {
                     name="category"
                     value={this.state.category}
                     placeholder="e.g. groceries, taxi, night out..."
+                    onChange={this.handleChange}
+                  />
+                  <FormControl.Feedback />
+                </FormGroup>
+              </Col>
+              <Col sm={3}>
+                <ControlLabel>Group (optional)</ControlLabel>
+                <FormGroup controlId="formBasicText">
+                  <FormControl
+                    className="isaver-input"
+                    type="text"
+                    name="group"
+                    value={this.state.group}
+                    placeholder="e.g. bills or food"
                     onChange={this.handleChange}
                   />
                   <FormControl.Feedback />

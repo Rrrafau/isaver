@@ -3,11 +3,10 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import _ from 'lodash'
 import {
-  removeSingleSpending,
-  updateSingleSpending,
-  removeSpendings,
-  createSpending,
-  getSpendings
+  removeSingleIncome,
+  updateSingleIncome,
+  createIncome,
+  getIncome
 } from '../actions/spendings'
 import {
   FormGroup,
@@ -53,7 +52,7 @@ class Inputs extends Component {
       return
     }
 
-    this.props.createSpending({
+    this.props.createIncome({
       createDate: Math.floor(new Date().getTime() / 1000),
       userID: this.props.profile.email,
       category, amount, group
@@ -274,7 +273,7 @@ class ManageIncome extends Component {
 
   componentWillMount() {
     if(this.props.profile) {
-      this.props.getSpendings({
+      this.props.getIncome({
         userID: this.props.profile.email,
         timeline: 'day'
       })
@@ -283,7 +282,7 @@ class ManageIncome extends Component {
 
   updateSpending(spending) {
     spending.amount = parseFloat(spending.amount)
-    this.props.updateSingleSpending(spending)
+    this.props.updateSingleIncome(spending)
   }
 
   deleteSpending(category, group) {
@@ -291,7 +290,7 @@ class ManageIncome extends Component {
   }
 
   deleteSingleSpending(_id) {
-    this.props.removeSingleSpending({_id})
+    this.props.removeSingleIncome({_id})
 
     let editInputs = Object.assign([], this.state.editInputs)
 
@@ -324,7 +323,7 @@ class ManageIncome extends Component {
   }
 
   fetchData(e) {
-    this.props.getSpendings({
+    this.props.getIncome({
       userID: this.props.profile.email,
       timeline: e.target.value
     })
@@ -386,7 +385,7 @@ class ManageIncome extends Component {
                 <Inputs
                   spending={{}}
                   profile={this.props.profile}
-                  createSpending={this.props.createSpending}
+                  createIncome={this.props.createIncome}
                 />
               )}
               {this.state.editInputs.length ? (
@@ -465,9 +464,8 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  removeSingleSpending,
-  updateSingleSpending,
-  removeSpendings,
-  createSpending,
-  getSpendings
+  removeSingleIncome,
+  updateSingleIncome,
+  createIncome,
+  getIncome
 })(ManageIncome)

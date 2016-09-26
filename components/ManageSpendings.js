@@ -196,9 +196,19 @@ class SpendingsTable extends Component {
     </Button>
     */
     if(Object.keys(spendings).length) {
+      let sortable = [];
+
+      for(let key in spendings) {
+        sortable.push(spendings[key])
+      }
+
+      sortable.sort(function(a,b) {
+        return b.amount - a.amount;
+      })
+
       spendingsData =
         <tbody>
-          {_.map(spendings, (spending, key) => {
+          {_.map(sortable, (spending, key) => {
             i++
             return (
               <tr key={'spendings'+key}>
@@ -415,6 +425,7 @@ class ManageSpendings extends Component {
                   onChange={this.fetchData}
                   >
                   <option value="today">Today</option>
+                  <option value="yesterday">Yesterday</option>
                   <option value="week">This Week</option>
                   <option value="month">This Month</option>
                   <option value="all">All</option>

@@ -57,6 +57,10 @@ export function getSpendings(userID, timeline) {
       start = moment().startOf('day')
       end = moment().endOf('day')
       break;
+    case 'yesterday':
+      start = moment().startOf('day').subtract(1, 'day')
+      end = moment().endOf('day').subtract(1, 'day')
+      break;
     case 'week':
       start = moment().startOf('week')
       end = moment().endOf('week')

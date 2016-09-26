@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, transitionTo } from 'react-router'
 import { login, logout } from '../actions'
+import { LinkContainer } from 'react-router-bootstrap'
 import {
   Navbar,
   NavItem,
@@ -15,6 +16,7 @@ class Layout extends Component {
     super(props)
     this.handleLoginClick = this.handleLoginClick.bind(this)
     this.handleLogoutClick = this.handleLogoutClick.bind(this)
+    this.navigateTo = this.navigateTo.bind(this)
   }
 
   handleLoginClick() {
@@ -23,6 +25,10 @@ class Layout extends Component {
 
   handleLogoutClick() {
     this.props.logout()
+  }
+
+  navigateTo(route) {
+    transitionTo(route);
   }
 
   render() {
@@ -38,14 +44,18 @@ class Layout extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem active={true}>
-                <i className="fa fa-plus-square" aria-hidden="true"></i>&nbsp;
-                Add Spendings
-              </NavItem>
-              <NavItem>
-                <i className="fa fa-line-chart" aria-hidden="true"></i>&nbsp;
-                Dashboard
-              </NavItem>
+              <LinkContainer to={{ pathname: '/spendings'}}>
+                <NavItem active={true}>
+                  <i className="fa fa-calculator" aria-hidden="true"></i>&nbsp;
+                  Spendings
+                </NavItem>
+              </LinkContainer>
+              <LinkContainer to={{ pathname: '/income'}}>
+                <NavItem>
+                  <i className="fa fa-line-chart" aria-hidden="true"></i>&nbsp;
+                  Income
+                </NavItem>
+              </LinkContainer>
             </Nav>
             { this.props.isAuthenticated ?
               (

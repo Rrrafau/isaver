@@ -182,19 +182,7 @@ class SpendingsTable extends Component {
   }
 
   render() {
-    let i = 0, spendingsData,
-      spendings = this.calculateSpendings(this.props.list);
-    // @todo add later if needed
-    /*
-    <Button
-      className="pull-right"
-      onClick={() => this.props.deleteSpending(
-        spending.category, spending.group
-      )}
-      bsStyle="danger">
-      Delete
-    </Button>
-    */
+    let i = 0, spendingsData, spendings = this.calculateSpendings(this.props.list);
     if(Object.keys(spendings).length) {
       let sortable = [];
 
@@ -266,7 +254,7 @@ class SpendingsTable extends Component {
   }
 }
 
-class ManageSpendings extends Component {
+class ManageIncome extends Component {
   constructor() {
     super()
     this.updateSpending = this.updateSpending.bind(this)
@@ -352,17 +340,27 @@ class ManageSpendings extends Component {
   render() {
     return(
       <div>
-        <div className="isaver-header">
+        <div className="isaver-header isaver-income">
           <div className="container">
-          <h1><i className="fa fa-calculator fa-lg"></i> Add your expenses&nbsp;
-            <span
-              style={{
-                fontStyle: 'italic',
-                color: '#c9d3e6',
-                fontWeight: '300'
-              }}
-                >
-            </span></h1>
+            <h1>
+              <i className="fa fa-line-chart fa-lg"></i> Add your income&nbsp;
+              <span
+                style={{
+                  fontStyle: 'italic',
+                  color: '#c9d3e6',
+                  fontWeight: '300'
+                }}
+                  >
+              </span>
+            </h1>
+            <div className="pull-right isaver-mode-buttons">
+              <div className="isaver-mode">
+                <i className="fa fa-list fa-3x"></i>
+              </div>
+              <div className="isaver-mode">
+                <i className="fa fa-bar-chart fa-3x"></i>
+              </div>
+            </div>
           </div>
         </div>
       {(!this.props.isAuthenticated) ? (
@@ -472,4 +470,4 @@ export default connect(mapStateToProps, {
   removeSpendings,
   createSpending,
   getSpendings
-})(ManageSpendings)
+})(ManageIncome)

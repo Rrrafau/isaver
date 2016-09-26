@@ -1,12 +1,10 @@
 import {
-  CREATE_SPENDING,
-  CALCULATE_SPENDINGS,
-  ALL_SPENDINGS,
-  CURRENT_SPENDINGS,
-  REMOVE_SPENDING,
-  REMOVE_SPENDINGS,
-  UPDATE_SPENDING
-} from './actionTypes/spendings';
+  CREATE_INCOME,
+  CALCULATE_INCOME,
+  ALL_INCOME,
+  REMOVE_INCOME,
+  UPDATE_INCOME
+} from './actionTypes/income';
 
 import axios from 'axios';
 
@@ -17,45 +15,13 @@ let GraphQLEndpoint = 'http://localhost:3001/api'
   // GraphQLEndpoint = 'http://isaver.online/api'
 // }
 
-function getCurrentSpendings(variables) {
+function getIncome(variables) {
   let query = `
-    query getCurrentSpendings($userID: String!, $createDate: Int!) {
-      currentSpendings(userID: $userID, createDate: $createDate) {
-        userID
-        category
-        amount
-        createDate
-      }
-    }
-  `;
-
-  return dispatch => {
-    return axios.post(GraphQLEndpoint, {
-  	  query, variables
-  	}).then((result) => {
-      if (result.data.errors) {
-    		dispatch({
-    		  type: CURRENT_SPENDINGS,
-    		  error: result.data.errors,
-    		})
-    		return
-  	  }
-
-  	  dispatch({
-    		type: CURRENT_SPENDINGS,
-    		currentSpendings: result.data.data.currentSpendings,
-  	  })
-    })
-  }
-}
-
-function getSpendings(variables) {
-  let query = `
-    query getSpendings(
+    query getIncome(
       $userID: String!
       $timeline: String!
     ) {
-      spendings(
+      income(
         userID: $userID
         timeline: $timeline
       ) {
@@ -75,30 +41,30 @@ function getSpendings(variables) {
   	}).then((result) => {
   	  if (result.data.errors) {
     		dispatch({
-    		  type: ALL_SPENDINGS,
+    		  type: ALL_INCOME,
     		  error: result.data.errors,
     		})
     		return;
   	  }
 
   	  dispatch({
-    		type: ALL_SPENDINGS,
-    		list: result.data.data.spendings,
+    		type: ALL_INCOME,
+    		list: result.data.data.income,
   	  })
   	})
   }
 }
 
-function createSpending(variables) {
+function createIncome(variables) {
   let query = `
-  	mutation createSpendingMutation(
+  	mutation createIncomeMutation(
       $category: String!
       $group: String!
       $userID: String!
       $createDate: Int!
       $amount: Float!
     ) {
-  	  createSpending(
+  	  createIncome(
         category: $category
         amount: $amount
         group: $group
@@ -121,16 +87,16 @@ function createSpending(variables) {
   	  variables,
   	}).then((result) => {
       dispatch({
-        type: CREATE_SPENDING,
-        spending: result.data.data.createSpending
+        type: CREATE_INCOME,
+        income: result.data.data.createIncome
       })
     })
   }
 }
 
-function updateSingleSpending(variables) {
+function updateSingleIncome(variables) {
   let query = `
-  	mutation updateSpendingMutation(
+  	mutation updateIncomeMutation(
       $_id: String!
       $category: String!
       $group: String!
@@ -138,7 +104,7 @@ function updateSingleSpending(variables) {
       $createDate: Int!
       $amount: Float!
     ) {
-  	  updateSpending(
+  	  updateIncome(
         _id: $_id
         category: $category
         amount: $amount
@@ -162,17 +128,17 @@ function updateSingleSpending(variables) {
   	  variables,
   	}).then((result) => {
       dispatch({
-        type: UPDATE_SPENDING,
-        spending: result.data.data.updateSpending
+        type: UPDATE_INCOME,
+        income: result.data.data.updateIncome
       })
     })
   }
 }
 
-function removeSingleSpending(variables) {
+function removeSingleIncome(variables) {
   let query = `
-  	mutation removeSpendingMutation($_id: String!) {
-  	  removeSpending(_id: $_id) {
+  	mutation removeIncomeMutation($_id: String!) {
+  	  removeIncome(_id: $_id) {
   		  _id
   	  }
   	}
@@ -184,27 +150,16 @@ function removeSingleSpending(variables) {
   	  variables
   	}).then((result) => {
   	  dispatch({
-    		type: REMOVE_SPENDING,
-    		_id: result.data.data.removeSpending._id,
+    		type: REMOVE_INCOME,
+    		_id: result.data.data.removeIncome._id,
   	  })
   	})
   }
 }
 
-function removeSpendings(spending) {
-  return function (dispatch) {
-	  dispatch({
-  		type: REMOVE_SPENDINGS,
-  		spending
-	  })
-  }
-}
-
 module.exports = {
-  createSpending,
-  removeSingleSpending,
-  getCurrentSpendings,
-  removeSpendings,
-  updateSingleSpending,
-  getSpendings
+  createIncome,
+  removeSingleIncome,
+  updateSingleIncome,
+  getIncome
 }

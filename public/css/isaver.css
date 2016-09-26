@@ -1,6 +1,20 @@
 button {
   outline: none !important;
 }
+.isaver-mode-buttons {
+  width: 208px;
+}
+.isaver-mode {
+  width: 50%;
+  height: 100%;
+  display: inline-block;
+  padding: 23px 29px;
+  color: rgba(255, 255, 255, 0.97);
+  text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+}
+.isaver-mode.active {
+  background: rgba(255, 255, 255, 0.19);
+}
 .isaver-control-label {
   font-weight: 300;
   font-style: italic;
@@ -23,10 +37,15 @@ button {
   float: left;
   width: 100%;
 }
+.isaver-header.isaver-income {
+  background: #f1950a;
+}
 .isaver-header h1 {
   color: #fbf0f0;
   font-weight: 300;
   margin: 24px 0 24px 0;
+  width: calc(100% - 208px);
+  display: inline-block;
 }
 .isaver-helptext {
   font-style: italic;
@@ -63,11 +82,13 @@ button {
 .isaver-input.isaver-input-amount {
   color: #f59a22;
 }
-@media (min-width: 768px)
-  .isaver-header {
-      padding-top: 60px;
-      padding-bottom: 60px;
-      font-size: 24px;
-      text-align: left;
+@media (max-width: 767px) {
+  .isaver-header h1, .isaver-mode-buttons {
+    width: 100%;
+    float: left;
+  }
+  .isaver-mode-buttons {
+    height: 32px;
+    padding: 0;
   }
 }

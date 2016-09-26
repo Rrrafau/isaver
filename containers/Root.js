@@ -6,6 +6,7 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import Layout from '../components/Layout'
 import Landing from '../components/Landing'
 import ManageSpendings from '../components/ManageSpendings'
+import ManageIncome from '../components/ManageIncome'
 import configureStore from '../store/configureStore'
 
 const store = configureStore()
@@ -19,6 +20,7 @@ const appRoutes = () => (
   <Route path="/" component={Layout}>
     <IndexRoute component={ManageSpendings} />
     <Route path="spendings" component={ManageSpendings} />
+    <Route path="income" component={ManageIncome} />
   </Route>
 )
 

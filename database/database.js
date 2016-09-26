@@ -47,35 +47,35 @@ export function getCurrentSpendings(userID, createDate) {
 export function getSpendings(userID, timeline) {
   let spendings = db.collection('spendings')
 
-  moment().tz('Asia/Manila')
+  let m = moment().tz('Asia/Manila')
 
   var start, end;
 
   switch(timeline) {
     case 'day':
     case 'today':
-      start = moment().startOf('day')
-      end = moment().endOf('day')
+      start = m.startOf('day')
+      end = m.endOf('day')
       break;
     case 'yesterday':
-      start = moment().startOf('day').subtract(1, 'day')
-      end = moment().endOf('day').subtract(1, 'day')
+      start = m.startOf('day').subtract(1, 'day')
+      end = m.endOf('day').subtract(1, 'day')
       break;
     case 'week':
-      start = moment().startOf('week')
-      end = moment().endOf('week')
+      start = m.startOf('week')
+      end = m.endOf('week')
       break;
     case 'lastweek':
-      start = moment().subtract(1, 'week').startOf('week')
-      end = moment().subtract(1, 'week').endOf('week')
+      start = m.subtract(1, 'week').startOf('week')
+      end = m.subtract(1, 'week').endOf('week')
       break;
     case 'month':
-      start = moment().startOf('month')
-      end = moment().endOf('month')
+      start = m.startOf('month')
+      end = m.endOf('month')
       break;
     case 'lastmonth':
-      start = moment().subtract(1, 'month').startOf('month')
-      end = moment().subtract(1, 'month').endOf('month')
+      start = m.subtract(1, 'month').startOf('month')
+      end = m.subtract(1, 'month').endOf('month')
       break;
   }
 

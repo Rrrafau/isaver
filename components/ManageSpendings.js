@@ -427,7 +427,9 @@ class ManageSpendings extends Component {
                   <option value="today">Today</option>
                   <option value="yesterday">Yesterday</option>
                   <option value="week">This Week</option>
+                  <option value="lastweek">Last Week</option>
                   <option value="month">This Month</option>
+                  <option value="lastmonth">Last Month</option>
                   <option value="all">All</option>
                 </FormControl>
               </FormGroup>

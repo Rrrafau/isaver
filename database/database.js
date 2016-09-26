@@ -65,17 +65,24 @@ export function getSpendings(userID, timeline) {
       start = moment().startOf('week')
       end = moment().endOf('week')
       break;
+    case 'lastweek':
+      start = moment().subtract(1, 'week').startOf('week')
+      end = moment().subtract(1, 'week').endOf('week')
+      break;
     case 'month':
       start = moment().startOf('month')
       end = moment().endOf('month')
+      break;
+    case 'lastmonth':
+      start = moment().subtract(1, 'month').startOf('month')
+      end = moment().subtract(1, 'month').endOf('month')
       break;
   }
 
   db.spendings.ensureIndex({ userID: 1, createDate: 1 })
 
-  console.log({ $gte: start.unix(), $lte: end.unix() })
-
   if(timeline !== 'all') {
+    console.log(start.format('MMMM Do YYYY, h:mm:ss a'), end.format('MMMM Do YYYY, h:mm:ss a'), start.unix(), end.unix())
     return db.spendings.find({ userID,
       createDate: { $gte: start.unix(), $lte: end.unix() }
     })

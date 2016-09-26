@@ -47,42 +47,42 @@ export function getCurrentSpendings(userID, createDate) {
 export function getSpendings(userID, timeline) {
   let spendings = db.collection('spendings')
 
-  let m = moment().tz('Asia/Manila')
-
   var start, end;
 
   switch(timeline) {
     case 'day':
     case 'today':
-      start = m.startOf('day')
-      end = m.endOf('day')
+      start = moment().tz('Asia/Manila').startOf('day')
+      end = moment().tz('Asia/Manila').endOf('day')
       break;
     case 'yesterday':
-      start = m.startOf('day').subtract(1, 'day')
-      end = m.endOf('day').subtract(1, 'day')
+      start = moment().tz('Asia/Manila').startOf('day').subtract(1, 'day')
+      end = moment().tz('Asia/Manila').endOf('day').subtract(1, 'day')
       break;
     case 'week':
-      start = m.startOf('week')
-      end = m.endOf('week')
+      start = moment().tz('Asia/Manila').startOf('week')
+      end = moment().tz('Asia/Manila').endOf('week')
       break;
     case 'lastweek':
-      start = m.subtract(1, 'week').startOf('week')
-      end = m.subtract(1, 'week').endOf('week')
+      start = moment().tz('Asia/Manila').subtract(1, 'week').startOf('week')
+      end = moment().tz('Asia/Manila').subtract(1, 'week').endOf('week')
       break;
     case 'month':
-      start = m.startOf('month')
-      end = m.endOf('month')
+      start = moment().tz('Asia/Manila').startOf('month')
+      end = moment().tz('Asia/Manila').endOf('month')
       break;
     case 'lastmonth':
-      start = m.subtract(1, 'month').startOf('month')
-      end = m.subtract(1, 'month').endOf('month')
+      start = moment().tz('Asia/Manila').subtract(1, 'month').startOf('month')
+      end = moment().tz('Asia/Manila').subtract(1, 'month').endOf('month')
       break;
   }
 
-  db.spendings.ensureIndex({ userID: 1, createDate: 1 })
+  db.spendings.ensureIndex({ createDate: 1 })
 
   if(timeline !== 'all') {
-    console.log(start.format('MMMM Do YYYY, h:mm:ss a'), end.format('MMMM Do YYYY, h:mm:ss a'), start.unix(), end.unix())
+    console.log({ userID,
+      createDate: { $gte: start.unix(), $lte: end.unix() }
+    })
     return db.spendings.find({ userID,
       createDate: { $gte: start.unix(), $lte: end.unix() }
     })

@@ -13,7 +13,7 @@ var data = []
 var groups = [
   {type: 'salary', category: ['CTO Leengo', 'CEO SmartSaver', 'Lead Engineer', 'CTO Leengo']},
   {type: 'stocks', category: ['Leengo', 'SmartSaver', 'Leengo', 'SmartSaver']},
-  {type: 'one-offs', category: ['Lecturing', 'Consulting (Business)', 'Consulting (IT)']},
+  {type: 'one-offs', category: ['Lecturing', 'Consulting (Business)', 'Consulting (Business)', 'Consulting (IT)']},
   {type: 'sales', category: ['SmartSaver subs', 'Leengo subs', 'Leengo subs', 'SmartSaver subs']},
   {type: 'renting-out', category: ['Condo in NY', 'House in PL', 'Vacation Home in PH', 'Condo in NY']},
   {type: 'music', category: ['DJ gigs', 'Movie Soundtracks', 'Track sales', 'DJ gigs']},
@@ -31,7 +31,7 @@ while(time <= now) {
     category: groups[int].category[getRandomInt(0, 3)],
     userID: 'radolasd@gmail.com',
     createDate: time.unix(),
-    amount: parseFloat((getRandomInt(1, 1000000)*Math.random()).toFixed(2))
+    amount: parseFloat((getRandomInt(1, 10000)*Math.random()).toFixed(2))
   }
 
   data.push(item)

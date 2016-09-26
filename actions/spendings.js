@@ -13,7 +13,7 @@ import axios from 'axios';
 let GraphQLEndpoint = 'http://localhost:3001/api'
 
 // if (process.env.NODE_ENV === 'production') {
-  // GraphQLEndpoint = 'http://isaver.online/api'
+  GraphQLEndpoint = 'http://isaver.online/api'
 // }
 
 function getCurrentSpendings(variables) {

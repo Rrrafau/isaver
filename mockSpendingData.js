@@ -39,7 +39,6 @@ while(time <= now) {
   time.add(2, 'hour');
 }
 
-console.log('created', data.length)
 let i = 0;
 
 db.spendings.ensureIndex({userID: 1})

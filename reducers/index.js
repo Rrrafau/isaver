@@ -9,9 +9,14 @@ const initialState = {
   isAuthenticated: checkTokenExpiry(),
   profile: getProfile(),
   error: '',
+  income: {
+    list: [
+
+    ]
+  },
   spendings: {
     list: [
-      
+
     ]
   }
 }
@@ -81,6 +86,48 @@ function getIndexOfSpendingItem(_id, list) {
   return index;
 }
 
+function income(state = initialState.income, action) {
+  let list = Object.assign([], state.list), index = -1
+
+  switch(action.type) {
+    case 'CREATE_INCOME':
+
+      list.push(Object.assign({}, action.income, {_id: new Date().getTime()}))
+
+      return Object.assign({}, state, {list})
+    case 'UPDATE_INCOME':
+      index = getIndexOfSpendingItem(action.income._id, list)
+
+      list[index] = Object.assign({}, action.income)
+
+      return Object.assign({}, state, {list})
+    case 'REMOVE_INCOME':
+      index = getIndexOfSpendingItem(action._id, list)
+
+      return Object.assign({}, state, {
+    		list: [
+    		  ...list.slice(0, index),
+    		  ...list.slice(index + 1)
+    		]
+  	  })
+    case 'REMOVE_INCOME':
+      let newList = []
+
+      _.each(list, function(li) {
+        if(li.category !== action.income.category || li.group !== action.income.group) {
+          newList.push(li)
+        }
+      })
+
+      return Object.assign({}, state, {list: newList})
+
+    case 'ALL_INCOME':
+      return Object.assign({}, state, {list: action.list})
+    default:
+      return state
+  }
+}
+
 function spendings(state = initialState.spendings, action) {
   let list = Object.assign([], state.list), index = -1
 
@@ -127,6 +174,7 @@ function spendings(state = initialState.spendings, action) {
 const rootReducer = combineReducers({
   spendings,
   routing,
+  income,
   auth,
 })
 

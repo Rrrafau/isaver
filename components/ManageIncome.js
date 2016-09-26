@@ -7,7 +7,7 @@ import {
   updateSingleIncome,
   createIncome,
   getIncome
-} from '../actions/spendings'
+} from '../actions/income'
 import {
   FormGroup,
   FormControl,
@@ -34,7 +34,7 @@ class Inputs extends Component {
   constructor() {
     super()
     this.handleChange = this.handleChange.bind(this)
-    this.addSpending = this.addSpending.bind(this)
+    this.addIncome = this.addIncome.bind(this)
     this.state = {
       amount: '',
       group: '',
@@ -42,7 +42,7 @@ class Inputs extends Component {
     }
   }
 
-  addSpending() {
+  addIncome() {
     let amount = parseFloat(this.state.amount)
     let category = this.state.category
     let group = this.state.group
@@ -70,7 +70,7 @@ class Inputs extends Component {
   }
 
   componentWillMount() {
-    this.setState(this.props.spending)
+    this.setState(this.props.income)
   }
 
   handleChange(e) {
@@ -130,7 +130,7 @@ class Inputs extends Component {
               <div className="isaver-add-amount">
                 <Button
                   className="pull-right isaver-button"
-                  onClick={() => this.props.deleteSingleSpending(
+                  onClick={() => this.props.deleteSingleIncome(
                     this.state._id
                   )}
                   bsStyle="danger">
@@ -139,7 +139,7 @@ class Inputs extends Component {
                 <Button
                   className="pull-right isaver-button"
                   style={{marginRight:4}}
-                  onClick={() => this.props.updateSpending(
+                  onClick={() => this.props.updateIncome(
                     Object.assign({}, this.state)
                   )}
                   bsStyle="warning">
@@ -150,7 +150,7 @@ class Inputs extends Component {
               <div className="isaver-add-amount">
                 <Button
                   className="pull-right isaver-button"
-                  onClick={this.addSpending}
+                  onClick={this.addIncome}
                   bsStyle="info">
                   <i className="fa fa-plus" aria-hidden="true"></i> Add
                 </Button>
@@ -163,52 +163,52 @@ class Inputs extends Component {
   }
 }
 
-class SpendingsTable extends Component {
-  calculateSpendings(list) {
-    let spendings = {}
+class IncomeTable extends Component {
+  calculateIncome(list) {
+    let income = {}
 
     _.each(list, function(li) {
-      if(spendings[li.group+'_'+li.category]) {
-        spendings[li.group+'_'+li.category].amount += li.amount
-        spendings[li.group+'_'+li.category].count ++
+      if(income[li.group+'_'+li.category]) {
+        income[li.group+'_'+li.category].amount += li.amount
+        income[li.group+'_'+li.category].count ++
       }
       else {
-        spendings[li.group+'_'+li.category] = Object.assign({}, li, {count: 1})
+        income[li.group+'_'+li.category] = Object.assign({}, li, {count: 1})
       }
     })
 
-    return spendings
+    return income
   }
 
   render() {
-    let i = 0, spendingsData, spendings = this.calculateSpendings(this.props.list);
-    if(Object.keys(spendings).length) {
+    let i = 0, incomeData, income = this.calculateIncome(this.props.list);
+    if(Object.keys(income).length) {
       let sortable = [];
 
-      for(let key in spendings) {
-        sortable.push(spendings[key])
+      for(let key in income) {
+        sortable.push(income[key])
       }
 
       sortable.sort(function(a,b) {
         return b.amount - a.amount;
       })
 
-      spendingsData =
+      incomeData =
         <tbody>
-          {_.map(sortable, (spending, key) => {
+          {_.map(sortable, (item, key) => {
             i++
             return (
-              <tr key={'spendings'+key}>
+              <tr key={'income'+key}>
                 <td>{i}</td>
-                <td>₱&nbsp;{parseFloat(spending.amount).formatMoney(2, '.', ',')}</td>
-                <td>{_.capitalize(spending.category)}</td>
-                <td>{_.capitalize(spending.group)}</td>
-                <td>{spending.count}</td>
+                <td>₱&nbsp;{parseFloat(item.amount).formatMoney(2, '.', ',')}</td>
+                <td>{_.capitalize(item.category)}</td>
+                <td>{_.capitalize(item.group)}</td>
+                <td>{item.count}</td>
                 <td>
                   <Button
                     className="pull-right"
-                    onClick={() => this.props.editSpending(
-                      spending.category, spending.group
+                    onClick={() => this.props.editIncome(
+                      item.category, item.group
                     )}
                     bsStyle="warning">
                     Edit
@@ -219,18 +219,18 @@ class SpendingsTable extends Component {
           })}
           <tr>
             <td>Total</td>
-            <td colSpan="5">₱&nbsp;{ _.map ( spendings,
-                (spending) => parseFloat(spending.amount)).reduce((a, b) => a + b, 0).formatMoney(2, '.', ',')
+            <td colSpan="5">₱&nbsp;{ _.map ( income,
+                (item) => parseFloat(item.amount)).reduce((a, b) => a + b, 0).formatMoney(2, '.', ',')
               }
             </td>
           </tr>
         </tbody>
     }
     else {
-      spendingsData =
+      incomeData =
       <tbody>
         <tr>
-          <td colSpan="6" className="isaver-table-no-data">This table gets populated as you add your spendings.</td>
+          <td colSpan="6" className="isaver-table-no-data">This table gets populated as you add your income.</td>
         </tr>
       </tbody>
     }
@@ -247,7 +247,7 @@ class SpendingsTable extends Component {
             <th></th>
           </tr>
         </thead>
-        {spendingsData}
+        {incomeData}
       </Table>
     )
   }
@@ -256,10 +256,9 @@ class SpendingsTable extends Component {
 class ManageIncome extends Component {
   constructor() {
     super()
-    this.updateSpending = this.updateSpending.bind(this)
-    this.deleteSpending = this.deleteSpending.bind(this)
-    this.deleteSingleSpending = this.deleteSingleSpending.bind(this)
-    this.editSpending = this.editSpending.bind(this)
+    this.updateIncome = this.updateIncome.bind(this)
+    this.deleteSingleIncome = this.deleteSingleIncome.bind(this)
+    this.editIncome = this.editIncome.bind(this)
     this.finishEditing = this.finishEditing.bind(this)
     this.fetchData = this.fetchData.bind(this)
     this.state = {
@@ -280,16 +279,12 @@ class ManageIncome extends Component {
     }
   }
 
-  updateSpending(spending) {
-    spending.amount = parseFloat(spending.amount)
-    this.props.updateSingleIncome(spending)
+  updateIncome(income) {
+    income.amount = parseFloat(income.amount)
+    this.props.updateSingleIncome(income)
   }
 
-  deleteSpending(category, group) {
-    this.props.removeSpendings({category, group})
-  }
-
-  deleteSingleSpending(_id) {
+  deleteSingleIncome(_id) {
     this.props.removeSingleIncome({_id})
 
     let editInputs = Object.assign([], this.state.editInputs)
@@ -299,14 +294,14 @@ class ManageIncome extends Component {
     this.setState({editInputs})
   }
 
-  editSpending(category, group) {
+  editIncome(category, group) {
     let editInputs = this.props.list.map((li) => {
       if(li.group === group && li.category === category) {
         return (
           <Inputs
-            deleteSingleSpending={this.deleteSingleSpending}
-            updateSpending={this.updateSpending}
-            spending={li}
+            deleteSingleIncome={this.deleteSingleIncome}
+            updateIncome={this.updateIncome}
+            income={li}
             key={li._id}
             edit={true}
           />
@@ -353,7 +348,7 @@ class ManageIncome extends Component {
               </span>
             </h1>
             <div className="pull-right isaver-mode-buttons">
-              <div className="isaver-mode">
+              <div className="isaver-mode active">
                 <i className="fa fa-list fa-3x"></i>
               </div>
               <div className="isaver-mode">
@@ -383,7 +378,7 @@ class ManageIncome extends Component {
                 this.state.editInputs
               ) : (
                 <Inputs
-                  spending={{}}
+                  income={{}}
                   profile={this.props.profile}
                   createIncome={this.props.createIncome}
                 />
@@ -410,7 +405,7 @@ class ManageIncome extends Component {
           <hr></hr>
           <Row>
             <Col sm={6}>
-              <h3>Current Spendings</h3>
+              <h3>Current Income</h3>
             </Col>
             <Col sm={6}>
               <FormGroup controlId="formBasicText" style={{paddingTop:17}}>
@@ -431,9 +426,8 @@ class ManageIncome extends Component {
               </FormGroup>
             </Col>
             <Col sm={12}>
-              <SpendingsTable
-                deleteSpending={this.deleteSpending}
-                editSpending={this.editSpending}
+              <IncomeTable
+                editIncome={this.editIncome}
                 list={this.props.list}
               />
             </Col>
@@ -456,7 +450,7 @@ class ManageIncome extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list } = state.spendings
+  const { list } = state.income
   const { profile, isAuthenticated } = state.auth
   return {
     list, profile, isAuthenticated

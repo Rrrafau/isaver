@@ -97,7 +97,7 @@ export function createIncome(category, group, amount, createDate, userID) {
 	   createDate, group, category, amount, userID
   }
 
-  return db.spendings.insert(item)
+  return db.income.insert(item)
 }
 
 export function updateIncome(_id, category, group, amount, createDate, userID) {
@@ -106,7 +106,7 @@ export function updateIncome(_id, category, group, amount, createDate, userID) {
 	   createDate, group, category, amount, userID
   }
 
-  return db.spendings.findAndModify({
+  return db.income.findAndModify({
 			new: true, // return the newly modified document
 			query: { _id: pmongo.ObjectId(_id) },
 			update: { $set: values } }).then(({ value }) => value);

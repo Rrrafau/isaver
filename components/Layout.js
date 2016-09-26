@@ -45,7 +45,7 @@ class Layout extends Component {
           <Navbar.Collapse>
             <Nav>
               <LinkContainer to={{ pathname: '/spendings'}}>
-                <NavItem active={true}>
+                <NavItem>
                   <i className="fa fa-calculator" aria-hidden="true"></i>&nbsp;
                   Spendings
                 </NavItem>

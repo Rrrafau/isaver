@@ -16,8 +16,9 @@
   },
   "homepage": "https://auth0.com",
   "dependencies": {
+    "amcharts": "^3.14.5",
     "amcharts3": "amcharts/amcharts3",
-    "amcharts3-react": "amcharts/amcharts3-react",
+    "amcharts3-react": "github:amcharts/amcharts3-react",
     "axios": "^0.14.0",
     "babel-polyfill": "^6.3.14",
     "babel-register": "^6.14.0",

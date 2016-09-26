@@ -416,12 +416,11 @@ class ManageSpendings extends Component {
               <h3>Current Spendings</h3>
             </Col>
             <Col sm={6}>
-              <FormGroup controlId="formBasicText">
+              <FormGroup controlId="formBasicText" style={{paddingTop:17}}>
                 <FormControl
                   className="isaver-select"
                   componentClass="select"
                   placeholder="select"
-                  style={{paddingTop:17}}
                   onChange={this.fetchData}
                   >
                   <option value="today">Today</option>

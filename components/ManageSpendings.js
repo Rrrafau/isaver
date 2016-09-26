@@ -275,10 +275,12 @@ class ManageSpendings extends Component {
   }
 
   componentWillMount() {
-    this.props.getSpendings({
-      userID: this.props.profile.email,
-      timeline: 'day'
-    })
+    if(this.props.profile) {
+      this.props.getSpendings({
+        userID: this.props.profile.email,
+        timeline: 'day'
+      })
+    }
   }
 
   updateSpending(spending) {

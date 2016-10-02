@@ -92,7 +92,7 @@ function income(state = initialState.income, action) {
   switch(action.type) {
     case 'CREATE_INCOME':
 
-      list.push(Object.assign({}, action.income, {_id: new Date().getTime()}))
+      list.push(Object.assign({}, action.income))
 
       return Object.assign({}, state, {list})
     case 'UPDATE_INCOME':

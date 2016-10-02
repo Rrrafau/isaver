@@ -1,50 +1,55 @@
 import React from 'react'
 import moment from 'moment'
-
-import { DateRangePicker } from 'react-dates'
+import { connect } from 'react-redux'
+import { SingleDatePicker } from 'react-dates'
 import {
-  HORIZONTAL_ORIENTATION,
   VERTICAL_ORIENTATION,
 } from 'react-dates/constants'
 
-class DateRangePickerWrapper extends React.Component {
+class SingleDatePickerWrapper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      focusedInput: null,
-      startDate: moment().subtract(1, 'day'),
-      endDate: moment(),
+      focused: false,
     };
 
-    this.onDatesChange = this.onDatesChange.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
   }
 
-  onDatesChange({ startDate, endDate }) {
-    this.setState({ startDate, endDate });
+  onDateChange(date) {
+    this.setState({ date });
   }
 
-  onFocusChange(focusedInput) {
-    this.setState({ focusedInput });
+  onFocusChange({ focused }) {
+    this.setState({ focused });
   }
 
   render() {
-    const { focusedInput, startDate, endDate } = this.state;
+    const { focused, date } = this.state;
+
     return (
-      <div>
-        <DateRangePicker
-          {...this.props}
-          onDatesChange={this.onDatesChange}
-          onFocusChange={this.onFocusChange}
-          withFullScreenPortal={true}
-          orientation={VERTICAL_ORIENTATION}
-          focusedInput={focusedInput}
-          startDate={startDate}
-          endDate={endDate}
-        />
-      </div>
+      <SingleDatePicker
+        {...this.props}
+        enableOutsideDays={true}
+        focused={focused}
+        withFullScreenPortal={true}
+        orientation={VERTICAL_ORIENTATION}
+        onFocusChange={this.onFocusChange}
+        isOutsideRange={() => false}
+        numberOfMonths={0}
+        displayFormat="ll"
+      />
     );
   }
 }
 
-export default DateRangePickerWrapper;
+function mapStateToProps(state) {
+  const { startDate, endDate } = state.dates
+  return {
+    startDate, endDate
+  }
+}
+
+export default connect(mapStateToProps, {
+})(SingleDatePickerWrapper)

@@ -46,7 +46,6 @@ function getIncome(variables) {
     		})
     		return;
   	  }
-
   	  dispatch({
     		type: ALL_INCOME,
     		list: result.data.data.income,

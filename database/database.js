@@ -44,48 +44,25 @@ export function getCurrentSpendings(userID, createDate) {
   return db.spendings.find({ userID, createDate })
 }
 
-export function getSpendings(userID, timeline) {
+export function getSpendings(userID, startDate, endDate) {
   let spendings = db.collection('spendings')
 
-  var start, end;
-
-  switch(timeline) {
-    case 'day':
-    case 'today':
-      start = moment().tz('Asia/Manila').startOf('day')
-      end = moment().tz('Asia/Manila').endOf('day')
-      break;
-    case 'yesterday':
-      start = moment().tz('Asia/Manila').startOf('day').subtract(1, 'day')
-      end = moment().tz('Asia/Manila').endOf('day').subtract(1, 'day')
-      break;
-    case 'week':
-      start = moment().tz('Asia/Manila').startOf('week')
-      end = moment().tz('Asia/Manila').endOf('week')
-      break;
-    case 'lastweek':
-      start = moment().tz('Asia/Manila').subtract(1, 'week').startOf('week')
-      end = moment().tz('Asia/Manila').subtract(1, 'week').endOf('week')
-      break;
-    case 'month':
-      start = moment().tz('Asia/Manila').startOf('month')
-      end = moment().tz('Asia/Manila').endOf('month')
-      break;
-    case 'lastmonth':
-      start = moment().tz('Asia/Manila').subtract(1, 'month').startOf('month')
-      end = moment().tz('Asia/Manila').subtract(1, 'month').endOf('month')
-      break;
-  }
+  var end = moment(endDate, 'MM DD YYYY').tz('Asia/Manila').startOf('day'),
+      start;
 
   db.spendings.ensureIndex({ createDate: 1 })
 
-  if(timeline !== 'all') {
+  if(startDate !== 'max') {
+    start = moment(startDate, 'MM DD YYYY').tz('Asia/Manila').endOf('day')
+
     return db.spendings.find({ userID,
       createDate: { $gte: start.unix(), $lte: end.unix() }
     })
   }
   else {
-    return db.spendings.find({ userID })
+    return db.spendings.find({ userID,
+      createDate: { $lte: end.unix() }
+    })
   }
 }
 

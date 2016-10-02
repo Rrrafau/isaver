@@ -5,13 +5,16 @@ import _ from 'lodash'
 import moment from 'moment'
 import Chart from './manager/Chart'
 import MoneyTable from './manager/MoneyTable'
-import DateRangePickerWrapper from './manager/Picker'
+import SingleDatePickerWrapper from './manager/Picker'
 import {
   removeSingleSpending,
   updateSingleSpending,
   createSpending,
   getSpendings
 } from '../actions/spendings'
+import {
+  setDates
+} from '../actions/dates'
 import {
   FormGroup,
   FormControl,
@@ -176,6 +179,8 @@ class ManageSpendings extends Component {
     this.editSpending = this.editSpending.bind(this)
     this.finishEditing = this.finishEditing.bind(this)
     this.fetchData = this.fetchData.bind(this)
+    this.changeStartDate = this.changeStartDate.bind(this)
+    this.changeEndDate = this.changeEndDate.bind(this)
     this.setMode = this.setMode.bind(this)
     this.state = {
       editInputs: [],
@@ -187,17 +192,34 @@ class ManageSpendings extends Component {
     this.setState({editInputs: []})
   }
 
+  fetchByDateRange(dates) {
+    if(this.props.profile) {
+      this.props.getSpendings(Object.assign({}, {
+        userID: this.props.profile.email,
+        startDate: this.props.startDate.format('MM DD YYYY'),
+        endDate: this.props.endDate.format('MM DD YYYY')
+      }, dates))
+    }
+  }
+
+  changeStartDate(date) {
+    this.fetchByDateRange({startDate: date.format('MM DD YYYY')})
+  }
+
+  changeEndDate(date) {
+    this.fetchByDateRange({endDate: date.format('MM DD YYYY')})
+  }
+
   setMode(mode) {
     this.setState({mode})
   }
 
   componentWillMount() {
-    if(this.props.profile) {
-      this.props.getSpendings({
-        userID: this.props.profile.email,
-        timeline: 'month'
-      })
-    }
+    this.fetchByDateRange({})
+  }
+
+  componentWillReceiveProps(nextProps) {
+    document.body.classList.toggle('isaver-no-scroll', nextProps.isFetching)
   }
 
   updateSpending(spending) {
@@ -239,9 +261,42 @@ class ManageSpendings extends Component {
   }
 
   fetchData(e) {
-    this.props.getSpendings({
-      userID: this.props.profile.email,
-      timeline: e.target.value
+    let startDate, endDate;
+
+    switch(e.target.value) {
+      case 'today':
+        startDate = moment().format('MM DD YYYY')
+        endDate = moment().add(1, 'day').format('MM DD YYYY')
+        break;
+      case 'yesterday':
+        startDate = moment().subtract(1, 'day').format('MM DD YYYY')
+        endDate = moment().format('MM DD YYYY')
+        break;
+      case 'week':
+        startDate = moment().startOf('week').format('MM DD YYYY')
+        endDate = moment().endOf('week').format('MM DD YYYY')
+        break;
+      case 'lastweek':
+        startDate = moment().subtract(1, 'week').startOf('week').format('MM DD YYYY')
+        endDate = moment().subtract(1, 'week').endOf('week').format('MM DD YYYY')
+        break;
+      case 'month':
+        startDate = moment().startOf('month').format('MM DD YYYY')
+        endDate = moment().endOf('month').format('MM DD YYYY')
+        break;
+      case 'lastmonth':
+        startDate = moment().subtract(1, 'month').startOf('month').format('MM DD YYYY')
+        endDate = moment().subtract(1, 'month').endOf('month').format('MM DD YYYY')
+        break;
+      case 'max':
+        startDate = 'max'
+        endDate = moment().format('MM DD YYYY')
+        break;
+    }
+
+    this.fetchByDateRange({
+      startDate: startDate,
+      endDate: endDate
     })
   }
 
@@ -255,6 +310,12 @@ class ManageSpendings extends Component {
   render() {
     return(
       <div>
+        { this.props.isFetching ? (
+        <div className="isaver-ajax-container">
+          <i className="isaver-ajax-spinner fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+          <span className="sr-only">Loading...</span>
+        </div>
+        ) : (null)}
         <div className="isaver-header">
           <div className="container">
             <h1>
@@ -300,8 +361,49 @@ class ManageSpendings extends Component {
       ) : (
         <div className="container">
           <Row>
-            <Col xs={12}>
-              <DateRangePickerWrapper />
+            <Col xs={12} className="isaver-dp-container">
+              <div className="isaver-dp pull-left">
+                <i className="fa fa-calendar fa-lg" aria-hidden="true"></i>
+              </div>
+              <div className="pull-left">
+                <SingleDatePickerWrapper
+                  date={moment(this.props.startDate)}
+                  onDateChange={this.changeStartDate}
+                  placeholder="Start Date"
+                  id="date_start"
+                  />
+              </div>
+              <div className="isaver-dp pull-left">
+                <i className="fa fa-arrow-right fa-lg" aria-hidden="true"></i>
+              </div>
+              <div className="pull-left">
+                <SingleDatePickerWrapper
+                  date={moment(this.props.endDate)}
+                  placeholder="End Date"
+                  onDateChange={this.changeEndDate}
+                  id="date_end"
+                  />
+              </div>
+              <h3 className="isaver-h3-select pull-left">or</h3>
+              <FormGroup controlId="formBasicText" className="isaver-dr-select">
+                <FormControl
+                  className="isaver-select"
+                  componentClass="select"
+                  placeholder="select"
+                  onChange={this.fetchData}
+                  >
+                  <option value="today">Today</option>
+                  <option value="yesterday">Yesterday</option>
+                  <option value="week">This Week</option>
+                  <option value="lastweek">Last Week</option>
+                  <option value="month">This Month</option>
+                  <option value="lastmonth">Last Month</option>
+                  <option value="max">Max</option>
+                </FormControl>
+
+                <i className="fa fa-caret-down isaver-select-caret-down"></i>
+                <i className="fa fa-caret-up isaver-select-caret-up"></i>
+              </FormGroup>
             </Col>
           </Row>
           <Row>
@@ -344,24 +446,6 @@ class ManageSpendings extends Component {
             <Col sm={6}>
               <h3>Current Spendings</h3>
             </Col>
-            <Col sm={6}>
-              <FormGroup controlId="formBasicText" style={{paddingTop:17}}>
-                <FormControl
-                  className="isaver-select"
-                  componentClass="select"
-                  placeholder="select"
-                  onChange={this.fetchData}
-                  >
-                  <option value="today">Today</option>
-                  <option value="yesterday">Yesterday</option>
-                  <option value="week">This Week</option>
-                  <option value="lastweek">Last Week</option>
-                  <option value="month">This Month</option>
-                  <option value="lastmonth">Last Month</option>
-                  <option value="all">All</option>
-                </FormControl>
-              </FormGroup>
-            </Col>
             {this.state.mode === 'table' ? (
             <Col sm={12}>
               <MoneyTable
@@ -395,8 +479,10 @@ class ManageSpendings extends Component {
 function mapStateToProps(state) {
   const { list } = state.spendings
   const { profile, isAuthenticated } = state.auth
+  const { startDate, endDate } = state.dates
+  const { isFetching } = state.ajax
   return {
-    list, profile, isAuthenticated
+    list, profile, isFetching, isAuthenticated, startDate, endDate
   }
 }
 
@@ -404,5 +490,6 @@ export default connect(mapStateToProps, {
   removeSingleSpending,
   updateSingleSpending,
   createSpending,
+  setDates,
   getSpendings
 })(ManageSpendings)

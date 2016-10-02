@@ -106,17 +106,21 @@ const queryType = new graphql.GraphQLObjectType({
       type: new graphql.GraphQLList(spendingType),
       args: {
         userID: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
-        timeline: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        startDate: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        endDate: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
       },
-      resolve: (_, { userID, timeline }) => database.getSpendings(userID, timeline),
+      resolve: (_, { userID, startDate, endDate }) =>
+                database.getSpendings(userID, startDate, endDate),
     },
     income: {
       type: new graphql.GraphQLList(incomeType),
       args: {
         userID: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
-        timeline: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        startDate: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+        endDate: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
       },
-      resolve: (_, { userID, timeline }) => database.getIncome(userID, timeline),
+      resolve: (_, { userID, startDate, endDate }) =>
+                database.getIncome(userID, startDate, endDate),
     }
   })
 })

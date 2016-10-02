@@ -2,13 +2,15 @@ import {
   CREATE_SPENDING,
   CALCULATE_SPENDINGS,
   ALL_SPENDINGS,
-  CURRENT_SPENDINGS,
   REMOVE_SPENDING,
-  REMOVE_SPENDINGS,
   UPDATE_SPENDING
 } from './actionTypes/spendings';
+import {
+  SET_DATES
+} from './actionTypes/dates'
 
 import axios from 'axios';
+import moment from 'moment';
 
 let GraphQLEndpoint = 'http://localhost:3001/api'
 
@@ -17,47 +19,17 @@ let GraphQLEndpoint = 'http://localhost:3001/api'
   GraphQLEndpoint = 'http://isaver.online/api'
 // }
 
-function getCurrentSpendings(variables) {
-  let query = `
-    query getCurrentSpendings($userID: String!, $createDate: Int!) {
-      currentSpendings(userID: $userID, createDate: $createDate) {
-        userID
-        category
-        amount
-        createDate
-      }
-    }
-  `;
-
-  return dispatch => {
-    return axios.post(GraphQLEndpoint, {
-  	  query, variables
-  	}).then((result) => {
-      if (result.data.errors) {
-    		dispatch({
-    		  type: CURRENT_SPENDINGS,
-    		  error: result.data.errors,
-    		})
-    		return
-  	  }
-
-  	  dispatch({
-    		type: CURRENT_SPENDINGS,
-    		currentSpendings: result.data.data.currentSpendings,
-  	  })
-    })
-  }
-}
-
 function getSpendings(variables) {
   let query = `
     query getSpendings(
       $userID: String!
-      $timeline: String!
+      $startDate: String!
+      $endDate: String!
     ) {
       spendings(
         userID: $userID
-        timeline: $timeline
+        startDate: $startDate
+        endDate: $endDate
       ) {
         _id
         userID
@@ -70,6 +42,10 @@ function getSpendings(variables) {
   `
 
   return dispatch => {
+    dispatch({
+      type: 'IS_FETCHING',
+      fetching: true,
+    })
   	return axios.post(GraphQLEndpoint, {
   	  query, variables
   	}).then((result) => {
@@ -81,9 +57,31 @@ function getSpendings(variables) {
     		return;
   	  }
 
+      let startDate = variables.startDate
+
+      if(startDate === 'max') {
+        if(result.data.data.spendings[0]) {
+          startDate = result.data.data.spendings[0].createDate * 1000
+        }
+        else {
+          startDate = moment()
+        }
+      }
+
   	  dispatch({
     		type: ALL_SPENDINGS,
     		list: result.data.data.spendings,
+  	  })
+      dispatch({
+        type: 'IS_FETCHING',
+        fetching: false,
+      })
+      dispatch({
+    		type: SET_DATES,
+    		dates: {
+          startDate: moment(startDate),
+          endDate: moment(variables.endDate)
+        }
   	  })
   	})
   }
@@ -191,20 +189,9 @@ function removeSingleSpending(variables) {
   }
 }
 
-function removeSpendings(spending) {
-  return function (dispatch) {
-	  dispatch({
-  		type: REMOVE_SPENDINGS,
-  		spending
-	  })
-  }
-}
-
 module.exports = {
   createSpending,
   removeSingleSpending,
-  getCurrentSpendings,
-  removeSpendings,
   updateSingleSpending,
   getSpendings
 }

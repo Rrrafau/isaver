@@ -16,7 +16,7 @@ export default class Chart extends Component {
     this.setInterval = this.setInterval.bind(this)
     this.state = {
       list: [],
-      interval: 'week'
+      interval: 'day'
     }
   }
 

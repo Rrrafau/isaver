@@ -1,11 +1,82 @@
+/* overrides */
 button {
   outline: none !important;
+}
+.SingleDatePicker__picker--full-screen-portal {
+  zoom: 2;
+  font-weight: 200;
+}
+@media (min-width: 512px) and (max-width: 767px) {
+  .SingleDatePicker__picker--full-screen-portal {
+    zoom: 1.5;
+    font-weight: 300;
+  }
+}
+@media (max-width: 511px) {
+  .SingleDatePicker__picker--full-screen-portal {
+    zoom: 1.0;
+    font-weight: 400;
+  }
+}
+.isaver-ajax-container {
+  position: absolute;
+  top: 53px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.74);
+  z-index: 100;
+}
+.isaver-ajax-spinner {
+  margin: 0 auto;
+  display: block !important;
+  margin-top: 30%;
+  zoom: 2;
+  color: #6cc4e0;
 }
 .isaver-mode-buttons {
   width: 208px;
 }
 .isaver-charts {
   height: 550px;
+}
+.isaver-dp {
+  display: inline-block;
+  padding: 14px 20px 16px 20px;
+  background: #e6e5e5;
+}
+.isaver-select {
+  border-radius: 0;
+  height: 50px;
+  box-shadow: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  font-size: 1.33em;
+  line-height: inherit;
+  font-weight: 300;
+  color: gray;
+}
+.isaver-h3-select {
+  display: inline-block;
+  margin: 12px 0 0 19px;
+  font-weight: lighter;
+  font-style: italic;
+}
+.isaver-dr-select {
+  width: calc(100% - 434px);
+  display: inline-block;
+  float: right;
+  font-size: 1em;
+}
+.isaver-select-caret-down {
+  position: absolute;
+  top: 22px;
+  right: 25px;
+}
+.isaver-select-caret-up {
+  top: 14px;
+  position: absolute;
+  right: 25px;
 }
 .isaver-mode {
   width: 50%;
@@ -72,19 +143,27 @@ button {
   font-style: italic;
   color: #9a9898;
 }
+.isaver-no-scroll {
+  overflow: hidden !important;
+}
 .isaver-disclaimer {
   color: gray;
   font-weight: 200;
 }
+.isaver-dp-container {
+  margin-top: 16px;
+}
 .isaver-input {
   border-radius: 0;
   box-shadow: none;
-  font-size: 1.5em;
-  height: auto;
+  font-size: 1.33em;
+  height: 50px;
   font-weight: 200;
 }
 .isaver-button {
-  font-size: 1.5em;
+  font-size: 1.33em;
+  height: 50px;
+  min-width: 45px;
 }
 .isaver-input.isaver-input-amount {
   color: #f59a22;

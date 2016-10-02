@@ -1,6 +1,7 @@
 import * as ActionTypes from '../actions'
 import { routerReducer as routing } from 'react-router-redux'
 import { combineReducers } from 'redux'
+import moment from 'moment'
 
 let browserStorage = typeof localStorage === 'undefined' ? null : localStorage
 
@@ -9,10 +10,17 @@ const initialState = {
   isAuthenticated: checkTokenExpiry(),
   profile: getProfile(),
   error: '',
+  dates: {
+    startDate: moment().startOf('month'),
+    endDate: moment().add(1, 'day')
+  },
   income: {
     list: [
 
     ]
+  },
+  ajax: {
+    isFetching: false,
   },
   spendings: {
     list: [
@@ -46,6 +54,24 @@ function getProfile() {
   }
   else {
     return {}
+  }
+}
+
+function dates(state = initialState.dates, action) {
+  switch (action.type) {
+    case 'SET_DATES':
+      return Object.assign({}, state, action.dates)
+    default:
+      return state
+  }
+}
+
+function ajax(state = initialState.ajax, action) {
+  switch (action.type) {
+    case 'IS_FETCHING':
+      return Object.assign({}, state, {isFetching: action.fetching})
+    default:
+      return state
   }
 }
 
@@ -175,7 +201,9 @@ const rootReducer = combineReducers({
   spendings,
   routing,
   income,
+  dates,
   auth,
+  ajax
 })
 
 export default rootReducer

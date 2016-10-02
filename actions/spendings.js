@@ -16,7 +16,7 @@ let GraphQLEndpoint = 'http://localhost:3001/api'
 
 // console.log(process.env.NODE_ENV, (process.env.NODE_ENV === 'production'))
 // if (process.env.NODE_ENV === 'production') {
-  // GraphQLEndpoint = 'http://isaver.online/api'
+  GraphQLEndpoint = 'http://isaver.online/api'
 // }
 
 function getSpendings(variables) {

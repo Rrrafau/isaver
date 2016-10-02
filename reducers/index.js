@@ -134,7 +134,7 @@ function spendings(state = initialState.spendings, action) {
   switch(action.type) {
     case 'CREATE_SPENDING':
 
-      list.push(Object.assign({}, action.spending, {_id: new Date().getTime()}))
+      list.push(Object.assign({}, action.spending))
 
       return Object.assign({}, state, {list})
     case 'UPDATE_SPENDING':

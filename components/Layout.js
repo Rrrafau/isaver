@@ -60,7 +60,9 @@ class Layout extends Component {
             { this.props.isAuthenticated ?
               (
                 <Nav pullRight>
-                  <Link to="profile"><img className="isaver-navbar-profile-picture" src={this.props.profile.picture} /></Link>
+                  <LinkContainer to={{ pathname: '/spendings'}}>
+                    <img className="isaver-navbar-profile-picture" src={this.props.profile.picture} />
+                  </LinkContainer>
                   <NavItem>
                       <i className="fa fa-user fa-lg" aria-hidden="true"></i>
                   </NavItem>

@@ -4,6 +4,9 @@ button {
 .isaver-mode-buttons {
   width: 208px;
 }
+.isaver-charts {
+  height: 550px;
+}
 .isaver-mode {
   width: 50%;
   height: 100%;

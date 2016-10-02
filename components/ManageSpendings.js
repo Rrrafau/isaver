@@ -276,7 +276,7 @@ class SpendingsChart extends Component {
     this.setInterval = this.setInterval.bind(this)
     this.state = {
       list: [],
-      interval: 'day'
+      interval: 'week'
     }
   }
 
@@ -316,7 +316,7 @@ class SpendingsChart extends Component {
     return chartData
   }
 
-  createSortedList(interval='day') {
+  createSortedList(interval='week') {
     let list = this.props.list
     let that = this
 
@@ -352,8 +352,8 @@ class SpendingsChart extends Component {
     let list = this.createSortedList()
 
     return (
-      <Row>
-        <Col sm={12} style={{height:570}}>
+      <div>
+        <Col sm={12} className="isaver-charts">
           <AmCharts
             path="/public/js/amcharts3/amcharts"
             type="serial"
@@ -413,7 +413,7 @@ class SpendingsChart extends Component {
             </FormControl>
           </FormGroup>
         </Col>
-      </Row>
+      </div>
     )
   }
 }
@@ -440,7 +440,7 @@ class ManageSpendings extends Component {
     if(this.props.profile) {
       this.props.getSpendings({
         userID: this.props.profile.email,
-        timeline: 'day'
+        timeline: 'month'
       })
     }
   }

@@ -373,7 +373,7 @@ class ManageSpendings extends Component {
               </div>
               <div className="pull-left">
                 <SingleDatePickerWrapper
-                  date={moment(this.props.startDate)}
+                  date={this.props.startDate}
                   onDateChange={this.changeStartDate}
                   placeholder="Start Date"
                   id="date_start"
@@ -384,7 +384,7 @@ class ManageSpendings extends Component {
               </div>
               <div className="pull-left">
                 <SingleDatePickerWrapper
-                  date={moment(this.props.endDate)}
+                  date={this.props.endDate}
                   placeholder="End Date"
                   onDateChange={this.changeEndDate}
                   id="date_end"

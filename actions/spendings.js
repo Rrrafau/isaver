@@ -79,8 +79,8 @@ function getSpendings(variables) {
       dispatch({
     		type: SET_DATES,
     		dates: {
-          startDate: moment(startDate),
-          endDate: moment(variables.endDate)
+          startDate: moment(startDate, 'MM DD YYYY'),
+          endDate: moment(variables.endDate, 'MM DD YYYY')
         }
   	  })
   	})

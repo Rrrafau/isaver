@@ -96,7 +96,7 @@ class Inputs extends Component {
               name="amount"
               step="0.01"
               value={this.state.amount}
-              placeholder="e.g. 75.50"
+              placeholder="e.g. 10000"
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -109,7 +109,7 @@ class Inputs extends Component {
               type="text"
               name="category"
               value={this.state.category}
-              placeholder="e.g. oranges"
+              placeholder="e.g. Facebook"
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -122,7 +122,7 @@ class Inputs extends Component {
               type="text"
               name="group"
               value={this.state.group}
-              placeholder="e.g. groceries"
+              placeholder="e.g. Salary"
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -167,6 +167,7 @@ class Inputs extends Component {
   }
 }
 
+// TODO consolidate with managespendings
 class ManageIncome extends Component {
   constructor() {
     super()
@@ -175,6 +176,7 @@ class ManageIncome extends Component {
     this.editIncome = this.editIncome.bind(this)
     this.finishEditing = this.finishEditing.bind(this)
     this.fetchData = this.fetchData.bind(this)
+    this.setMode = this.setMode.bind(this)
     this.state = {
       editInputs: [],
     }
@@ -182,6 +184,10 @@ class ManageIncome extends Component {
 
   finishEditing() {
     this.setState({editInputs: []})
+  }
+
+  setMode(mode) {
+    this.setState({mode})
   }
 
   componentWillMount() {
@@ -261,14 +267,25 @@ class ManageIncome extends Component {
                   >
               </span>
             </h1>
-            <div className="pull-right isaver-mode-buttons">
-              <div className="isaver-mode active">
-                <i className="fa fa-list fa-3x"></i>
+            {this.state.mode === 'table' ? (
+              <div className="pull-right isaver-mode-buttons">
+                <div className="isaver-mode active" onClick={() => this.setMode('table')}>
+                  <i className="fa fa-list fa-3x"></i>
+                </div>
+                <div className="isaver-mode" onClick={() => this.setMode('chart')}>
+                  <i className="fa fa-bar-chart fa-3x"></i>
+                </div>
               </div>
-              <div className="isaver-mode">
-                <i className="fa fa-bar-chart fa-3x"></i>
+            ) : (
+              <div className="pull-right isaver-mode-buttons">
+                <div className="isaver-mode" onClick={() => this.setMode('table')}>
+                  <i className="fa fa-list fa-3x"></i>
+                </div>
+                <div className="isaver-mode active" onClick={() => this.setMode('chart')}>
+                  <i className="fa fa-bar-chart fa-3x"></i>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       {(!this.props.isAuthenticated) ? (
@@ -339,15 +356,18 @@ class ManageIncome extends Component {
                 </FormControl>
               </FormGroup>
             </Col>
+            {this.state.mode === 'table' ? (
             <Col sm={12}>
               <MoneyTable
                 editItem={this.editIncome}
                 list={this.props.list}
               />
             </Col>
+            ) : (
             <Col sm={12}>
               <Chart list={this.props.list}/>
             </Col>
+            )}
           </Row>
           <hr></hr>
           <Row>

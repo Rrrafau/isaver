@@ -8,7 +8,6 @@ import MoneyTable from './manager/MoneyTable'
 import {
   removeSingleSpending,
   updateSingleSpending,
-  removeSpendings,
   createSpending,
   getSpendings
 } from '../actions/spendings'
@@ -167,22 +166,28 @@ class Inputs extends Component {
   }
 }
 
+// TODO consolidate with manageincome
 class ManageSpendings extends Component {
   constructor() {
     super()
     this.updateSpending = this.updateSpending.bind(this)
-    this.deleteSpending = this.deleteSpending.bind(this)
     this.deleteSingleSpending = this.deleteSingleSpending.bind(this)
     this.editSpending = this.editSpending.bind(this)
     this.finishEditing = this.finishEditing.bind(this)
     this.fetchData = this.fetchData.bind(this)
+    this.setMode = this.setMode.bind(this)
     this.state = {
       editInputs: [],
+      mode: 'table',
     }
   }
 
   finishEditing() {
     this.setState({editInputs: []})
+  }
+
+  setMode(mode) {
+    this.setState({mode})
   }
 
   componentWillMount() {
@@ -197,10 +202,6 @@ class ManageSpendings extends Component {
   updateSpending(spending) {
     spending.amount = parseFloat(spending.amount)
     this.props.updateSingleSpending(spending)
-  }
-
-  deleteSpending(category, group) {
-    this.props.removeSpendings({category, group})
   }
 
   deleteSingleSpending(_id) {
@@ -255,15 +256,36 @@ class ManageSpendings extends Component {
       <div>
         <div className="isaver-header">
           <div className="container">
-          <h1><i className="fa fa-calculator fa-lg"></i> Add your expenses&nbsp;
-            <span
-              style={{
-                fontStyle: 'italic',
-                color: '#c9d3e6',
-                fontWeight: '300'
-              }}
-                >
-            </span></h1>
+            <h1>
+              <i className="fa fa-calculator fa-lg"></i> Add your expenses&nbsp;
+              <span
+                style={{
+                  fontStyle: 'italic',
+                  color: '#c9d3e6',
+                  fontWeight: '300'
+                }}
+                  >
+              </span>
+            </h1>
+            {this.state.mode === 'table' ? (
+              <div className="pull-right isaver-mode-buttons">
+                <div className="isaver-mode active" onClick={() => this.setMode('table')}>
+                  <i className="fa fa-list fa-3x"></i>
+                </div>
+                <div className="isaver-mode" onClick={() => this.setMode('chart')}>
+                  <i className="fa fa-bar-chart fa-3x"></i>
+                </div>
+              </div>
+            ) : (
+              <div className="pull-right isaver-mode-buttons">
+                <div className="isaver-mode" onClick={() => this.setMode('table')}>
+                  <i className="fa fa-list fa-3x"></i>
+                </div>
+                <div className="isaver-mode active" onClick={() => this.setMode('chart')}>
+                  <i className="fa fa-bar-chart fa-3x"></i>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       {(!this.props.isAuthenticated) ? (
@@ -334,15 +356,18 @@ class ManageSpendings extends Component {
                 </FormControl>
               </FormGroup>
             </Col>
+            {this.state.mode === 'table' ? (
             <Col sm={12}>
               <MoneyTable
                 editItem={this.editSpending}
                 list={this.props.list}
               />
             </Col>
+            ) : (
             <Col sm={12}>
               <Chart list={this.props.list}/>
             </Col>
+            )}
           </Row>
           <hr></hr>
           <Row>
@@ -372,7 +397,6 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   removeSingleSpending,
   updateSingleSpending,
-  removeSpendings,
   createSpending,
   getSpendings
 })(ManageSpendings)

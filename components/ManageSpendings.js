@@ -5,6 +5,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import Chart from './manager/Chart'
 import MoneyTable from './manager/MoneyTable'
+import DateRangePickerWrapper from './manager/Picker'
 import {
   removeSingleSpending,
   updateSingleSpending,
@@ -298,6 +299,11 @@ class ManageSpendings extends Component {
         </div>
       ) : (
         <div className="container">
+          <Row>
+            <Col xs={12}>
+              <DateRangePickerWrapper />
+            </Col>
+          </Row>
           <Row>
             <Col xs={12}>
               <h3>Enter the amount, category and group</h3>

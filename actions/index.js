@@ -30,7 +30,7 @@ export function login() {
       }
       localStorage.setItem('profile', JSON.stringify(profile))
       localStorage.setItem('id_token', token)
-      return dispatch(loginSuccess(profile))
+      dispatch(loginSuccess(profile))
     })
   }
 }

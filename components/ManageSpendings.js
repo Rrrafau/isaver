@@ -218,6 +218,12 @@ class ManageSpendings extends Component {
     this.fetchByDateRange({})
   }
 
+  componentDidUpdate(prev) {
+    if(this.props.isAuthenticated && !prev.isAuthenticated) {
+      this.fetchByDateRange({})
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     document.body.classList.toggle('isaver-no-scroll', nextProps.isFetching)
   }
